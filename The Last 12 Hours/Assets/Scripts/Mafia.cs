@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mafia : MonoBehaviour
+public class Mafia : Entity
 {
     // Start is called before the first frame update
     void Start()
@@ -15,4 +15,15 @@ public class Mafia : MonoBehaviour
     {
         
     }
+
+    protected override void Attack()
+    {
+        
+    }
+
+    protected override void Walk() 
+    {
+
+    } 
+
 }

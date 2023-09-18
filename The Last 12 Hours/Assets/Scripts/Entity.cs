@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+[System.Serializable]
+public abstract class Entity : Map
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    protected int _damage; //flat damage for this class
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField]
+    protected int _vision; //is this pixels? 
+
+    [SerializeField]
+    protected float Speed;
+
+    [SerializeField]
+    protected bool canMove;
+
+    protected abstract void Attack();
+    protected abstract void Walk();
+
 }
