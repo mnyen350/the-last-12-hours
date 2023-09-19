@@ -1,14 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Properties;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class Player : Entity
-{
-    // Start is called before the first frame update
+{ 
+    // Static reference to the instance
+    public static Player Instance { get; private set; }
+
+    private SpriteRenderer sr;
+    private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
+
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
 
+        sr = GetComponent<SpriteRenderer>();
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
     }
@@ -20,6 +35,14 @@ public class Player : Entity
         UpdateMove();
     }
 
+    // For Updating player acording to the scene.
+    public void UpdateScene()
+    {
+        bool isNoPlayerScene = NO_PLAYER_SCENES.Contains(GameManager.Instance.playerSceneIndex);
+
+        // Could use !isNoPlayerScene, but this looks better for scaling code.
+        sr.enabled = isNoPlayerScene ? false : true;
+    }
     private void UpdateMove()
     {
         if (canMove == false) return;

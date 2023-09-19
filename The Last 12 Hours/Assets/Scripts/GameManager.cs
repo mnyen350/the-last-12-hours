@@ -1,58 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private int playerSceneIndex = 0;
+    public int playerSceneIndex = 0;
 
-    // Public player object so we don't need to find it by code.
-    public GameObject playerObject;
+    public static GameManager Instance { get; private set; }
 
-    public static GameManager Instance;
-    
-    void Awake()
+    private void Awake()
     {
         // This is for setting the instance of the singleton
-        if (Instance != null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(this);
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Destroy(this);
-        }
+
+        Instance = this;
+
+        playerSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void Start()
     {
-        playerObject = GameObject.Find("Player");
     }
 
     // Moves the player to the spawnpoint
     public void SpawnPlayer()
     {
-        GameObject spawn = GameObject.Find("Spawnpoint");
+        if (GameObject.Find("Spawnpoint") is GameObject spawn)
+        {
+            Player.Instance.transform.position = spawn.transform.position;
+        }
+    }
 
-        if(spawn != null)
-        {
-            Debug.LogError("Spawnpoint is not set");
-        }
-        else
-        {
-            playerObject.transform.position = spawn.transform.position;
-        }
+    // An event when a scene is loaded.
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SpawnPlayer();
+        Player.Instance.UpdateScene();
     }
 
 
     // Moves the player to the next scene and then spawns the player
-    public void NextScene()
+    public static void NextScene()
     {
-        playerSceneIndex++;
-        SceneManager.LoadScene(playerSceneIndex);
-
-        SpawnPlayer();
+        Instance.playerSceneIndex++;
+        SceneManager.LoadScene(Instance.playerSceneIndex);
     }
 }
