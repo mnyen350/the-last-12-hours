@@ -1,10 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+public enum ItemType
+{
+    // Auto Consumables
+    Ammo = 1,
+
+    // Manual Consumables
+    Battery = 1000,
+    Bandage, 
+
+    // Equipment
+    Flashlight = 2000,
+    Axe,
+    Knife,
+    Gun
+}
 public class Item : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public ItemType Type;
+    public bool IsEquipment
+    {
+        get => (Type >= ItemType.Flashlight);
+    }
+    public bool IsConsumable
+    {
+        get
+        {
+            if (Type < ItemType.Battery) return true; // Auto Consumables
+            else if (Type < ItemType.Flashlight) return true; // Manual Consumables
+            else return false;
+        }
+    }
+    /*
+     * TO ADD
+     * 
+     * additional item info/fields likeeeee 
+     * bandage healing amount
+     * weapon range
+     * weapon damage
+     * ammo count -> count of item? 
+     * isStacking?? 
+     * 
+     */
+
+    public bool IsAutoConsume
+    {
+        get => (Type < ItemType.Battery); // Auto Consumables
+    }
+    
     void Start()
     {
         
