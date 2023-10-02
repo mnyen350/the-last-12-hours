@@ -12,6 +12,7 @@ public class Player : Entity
     public static Player Instance { get; private set; }
 
     private SpriteRenderer sr;
+    private Rigidbody2D rb;
     private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
 
     void Awake()
@@ -24,6 +25,7 @@ public class Player : Entity
         Instance = this;
 
         sr = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
     }
@@ -32,7 +34,6 @@ public class Player : Entity
     void Update()
     {
         // Do not overload the main method
-        UpdateMove();
     }
 
     // For Updating player acording to the scene.
@@ -49,8 +50,15 @@ public class Player : Entity
 
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(x, y, 0);
-        transform.Translate(movement * Speed * Time.deltaTime);
+
+        // Using velocity so it doesn't get buggy on the walls
+        Vector2 movement = new Vector2(x, y);
+        rb.velocity = movement * Speed;
+    }
+    void FixedUpdate()
+    {
+        // Using FixedUpdate to get a Physics acurate movement.
+        UpdateMove();
     }
 
     protected override void Attack()
