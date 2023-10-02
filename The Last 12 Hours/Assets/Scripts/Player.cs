@@ -15,6 +15,8 @@ public class Player : Entity
     private Rigidbody2D rb;
     private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
 
+    private Animator animator;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -26,6 +28,7 @@ public class Player : Entity
 
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
     }
@@ -54,6 +57,17 @@ public class Player : Entity
         // Using velocity so it doesn't get buggy on the walls
         Vector2 movement = new Vector2(x, y);
         rb.velocity = movement * Speed;
+
+        animator.SetFloat("speed", movement.magnitude);
+
+        if (x > 0)
+        {
+            sr.flipX = false;
+        }
+        else if (x < 0)
+        {
+            sr.flipX = true;
+        }
     }
     void FixedUpdate()
     {
