@@ -15,6 +15,9 @@ public class Player : Entity
     private Rigidbody2D rb;
     private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
 
+    [SerializeField]
+    private float interactDistance = 5;
+
     private Animator animator;
 
     void Awake()
@@ -37,6 +40,11 @@ public class Player : Entity
     void Update()
     {
         // Do not overload the main method
+        
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact();
+        }
     }
 
     // For Updating player acording to the scene.
@@ -74,7 +82,16 @@ public class Player : Entity
         // Using FixedUpdate to get a Physics acurate movement.
         UpdateMove();
     }
-
+    private void Interact()
+    {
+        if (canMove == false) return;
+        List<Interactable> interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance).Where(x => x.CompareTag("Interactable")).Select(x => x.GetComponent<Interactable>()).ToList();
+        foreach(Interactable interactable in interactables)
+        {
+            Debug.Log("test");
+            interactable.Interact();
+        }
+    }
     protected override void Attack()
     {
         Debug.Log("Attack Player");

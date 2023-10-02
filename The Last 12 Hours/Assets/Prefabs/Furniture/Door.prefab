@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7881483538731955548}
   - component: {fileID: 271480775647977431}
   - component: {fileID: 2035292818479704898}
+  - component: {fileID: 684895333623448887}
   m_Layer: 0
   m_Name: Door
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &271480775647977431
 SpriteRenderer:
@@ -130,3 +131,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.0329776}
   m_EdgeRadius: 0
+--- !u!114 &684895333623448887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8096202257674679837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e7d587e917cb84dbf3f65d67e275bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closedDoor: {fileID: 21300000, guid: 0fafc108477265b4a94074e775aa8456, type: 3}
+  openedDoor: {fileID: 21300000, guid: 028fdb5724cf4204eb9a6c02e465a402, type: 3}
