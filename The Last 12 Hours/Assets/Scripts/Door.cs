@@ -7,14 +7,14 @@ public class Door : Interactable
     private bool closed = true;
 
     [SerializeField]
-    private Sprite closedDoor;
+    private GameObject closedDoor;
 
     [SerializeField]
-    private Sprite openedDoor;
+    private GameObject openedDoor;
 
     private SpriteRenderer sr;
 
-    private BoxCollider2D collider;
+    private new BoxCollider2D collider;
 
     private void Start()
     {
@@ -24,16 +24,11 @@ public class Door : Interactable
 
     public override void Interact()
     {
-        if (closed)
-        {
-            sr.sprite = openedDoor;
-        }
-        else
-        {
-            sr.sprite = closedDoor;
-        }
+        openedDoor.SetActive(closed);
+        closedDoor.SetActive(!closed);
 
         collider.isTrigger = closed;
         closed = !closed;
     }
+
 }

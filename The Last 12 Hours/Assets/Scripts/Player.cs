@@ -88,7 +88,6 @@ public class Player : Entity
         List<Interactable> interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance).Where(x => x.CompareTag("Interactable")).Select(x => x.GetComponent<Interactable>()).ToList();
         foreach(Interactable interactable in interactables)
         {
-            Debug.Log("test");
             interactable.Interact();
         }
     }
