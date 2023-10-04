@@ -12,13 +12,10 @@ public class Door : Interactable
     [SerializeField]
     private GameObject openedDoor;
 
-    private SpriteRenderer sr;
-
     private new BoxCollider2D collider;
 
     private void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
         collider = GetComponent<BoxCollider2D>();
     }
 

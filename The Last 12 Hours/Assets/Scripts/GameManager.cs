@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -6,7 +7,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [DoNotSerialize]
     public int playerSceneIndex = 0;
+    public OutlineInteract OutlineInteract;
+
 
     public static GameManager Instance { get; private set; }
 
@@ -55,4 +59,13 @@ public class GameManager : MonoBehaviour
         Instance.playerSceneIndex++;
         SceneManager.LoadScene(Instance.playerSceneIndex);
     }
+}
+
+[Serializable]
+public class OutlineInteract
+{
+    public float Distance = 2;
+
+    public Material Outline;
+    public Material NoOutline;
 }
