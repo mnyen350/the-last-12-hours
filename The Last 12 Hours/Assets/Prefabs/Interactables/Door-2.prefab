@@ -333,8 +333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Outline: 1
-  closedDoor: {fileID: 6923781395732328697}
-  openedDoor: {fileID: 5717833346766737605}
+  firstState: {fileID: 6923781395732328697}
+  secondState: {fileID: 5717833346766737605}
 --- !u!61 &9134237537639234084
 BoxCollider2D:
   m_ObjectHideFlags: 0
