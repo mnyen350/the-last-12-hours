@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 [System.Serializable]
@@ -16,7 +17,7 @@ public class Player : Entity
     private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
 
     [SerializeField]
-    private float interactDistance = 5;
+    public float interactDistance = 5;
 
     private Animator animator;
 
@@ -85,8 +86,8 @@ public class Player : Entity
     private void Interact()
     {
         if (canMove == false) return;
-        List<Interactable> interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance).Where(x => x.CompareTag("Interactable")).Select(x => x.GetComponent<Interactable>()).ToList();
-        foreach(Interactable interactable in interactables)
+        List<Interactable> interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance).Where(x => x.CompareTag("Interactable")).Select(x => x.GetComponent<Interactable>()).OrderBy(x => Vector2.Distance(x.transform.position, transform.position)).ToList();
+        if (interactables.FirstOrDefault() is Interactable interactable)
         {
             interactable.Interact();
         }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
@@ -21,19 +22,23 @@ public abstract class Interactable : MonoBehaviour
 
     private void CheckOutline()
     {
-        if (Vector2.Distance(Player.Instance.transform.position, transform.position) <= GameManager.Instance.OutlineInteract.Distance)
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(Player.Instance.transform.position, Player.Instance.interactDistance);
+
+        if (colliders.Any(x => x.CompareTag("Interactable") && x.gameObject == this.gameObject))
         {
-             foreach (SpriteRenderer renderer in spriteRenderers)
-            {
-                renderer.material = GameManager.Instance.OutlineInteract.Outline;
-            }
+            SetOutline(GameManager.Instance.OutlineInteract.Outline);
         }
         else
         {
-            foreach (SpriteRenderer renderer in spriteRenderers)
-            {
-                renderer.material = GameManager.Instance.OutlineInteract.NoOutline;
-            }
+            SetOutline(GameManager.Instance.OutlineInteract.NoOutline);
+        }
+    }
+
+    private void SetOutline(Material outlineMaterial)
+    {
+        foreach (SpriteRenderer renderer in spriteRenderers)
+        {
+            renderer.material = outlineMaterial;
         }
     }
 }

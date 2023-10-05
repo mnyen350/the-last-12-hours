@@ -46,6 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSceneIndex: 0
   OutlineInteract:
-    Distance: 1.25
+    Distance: 1.23
     Outline: {fileID: 2100000, guid: 82ea68a891e7c26409bab7973a21460d, type: 2}
     NoOutline: {fileID: 2100000, guid: af55d4c2f48bd314bb74942ec16c7c06, type: 2}
