@@ -3,20 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Properties;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 [System.Serializable]
 public class Player : Entity
-{ 
+{
     // Static reference to the instance
     public static Player Instance { get; private set; }
 
     private SpriteRenderer sr;
     private Rigidbody2D rb;
+
+    // Hand of the player and components
     private GameObject hand;
+    private Light2D flashlight;
+
     private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
+
+    public Inventory Inventory;
 
     [SerializeField]
     public float interactDistance = 5;
@@ -36,6 +45,7 @@ public class Player : Entity
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         hand = transform.Find("Hand").gameObject;
+        flashlight = hand.GetComponentInChildren<Light2D>();
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
     }
@@ -44,11 +54,15 @@ public class Player : Entity
     void Update()
     {
         // Do not overload the main method
-        
+
         // KeyCode for Input
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Fire();
         }
 
         // Updates the hand position and handles different things about the hand
@@ -85,6 +99,7 @@ public class Player : Entity
             sr.flipX = true;
         }
     }
+
     void FixedUpdate()
     {
         // Using FixedUpdate to get a Physics acurate movement.
@@ -126,5 +141,17 @@ public class Player : Entity
     {
         _currentHealth = Mathf.Clamp(_currentHealth + healAmount, 0, _maxHealth);
         Debug.Log("Player healed");
+    }
+
+    // This is the use/fire/consume button
+    private void Fire()
+    {
+        TurnFlashLight();
+    }
+
+    // Enables and disables the flashlight depending of the state of this.
+    private void TurnFlashLight()
+    {
+        flashlight.enabled = !flashlight.enabled;
     }
 }

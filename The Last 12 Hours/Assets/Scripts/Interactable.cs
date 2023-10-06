@@ -10,6 +10,7 @@ public abstract class Interactable : MonoBehaviour
     public bool Outline = true;
     public abstract void Interact();
 
+    // Gets all the components type SpriteRenderer to the array
     private void Awake()
     {
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
@@ -20,6 +21,8 @@ public abstract class Interactable : MonoBehaviour
         if (Outline) CheckOutline();
     }
 
+
+    // Constantly check if a player is near the interactable.
     private void CheckOutline()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(Player.Instance.transform.position, Player.Instance.interactDistance);
@@ -34,6 +37,7 @@ public abstract class Interactable : MonoBehaviour
         }
     }
 
+    // This sets the outline of interactable.
     private void SetOutline(Material outlineMaterial)
     {
         foreach (SpriteRenderer renderer in spriteRenderers)

@@ -20,6 +20,7 @@ public class BoolInteraction : Interactable
         collider = GetComponent<BoxCollider2D>();
     }
 
+    // Interacts with it and changes the state of the object.
     public override void Interact()
     {
         firstState.SetActive(interacted);

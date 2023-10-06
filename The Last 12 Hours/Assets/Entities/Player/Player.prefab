@@ -56,6 +56,11 @@ MonoBehaviour:
   _vision: 0
   Speed: 1
   canMove: 1
+  Inventory:
+    Hotbar:
+    - {fileID: 0}
+    - {fileID: 0}
+    Items: []
   interactDistance: 0.75
 --- !u!212 &2289830049086549695
 SpriteRenderer:
@@ -210,7 +215,7 @@ MonoBehaviour:
   - {x: 0.13538869, y: -0.4849929, z: 0}
   m_ShapePathHash: 719005741
   m_Mesh: {fileID: 0}
-  m_InstanceId: 42912
+  m_InstanceId: 40952
   m_LocalBounds:
     m_Center: {x: 0.06812896, y: -0.075132936, z: 0}
     m_Extent: {x: 0.15115556, y: 0.40985996, z: 0}

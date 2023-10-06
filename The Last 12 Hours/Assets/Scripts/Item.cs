@@ -34,6 +34,11 @@ public class Item : MonoBehaviour
             else return false;
         }
     }
+
+    public int Amount { get; set; }
+
+    public string Name;
+
     /*
      * TO ADD
      * 
@@ -50,15 +55,9 @@ public class Item : MonoBehaviour
     {
         get => (Type < ItemType.Battery); // Auto Consumables
     }
-    
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void Use()
     {
-        
+        // Here will be the Use logic of the item.
     }
 }
