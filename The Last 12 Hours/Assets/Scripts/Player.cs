@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ public class Player : Entity
 
     private SpriteRenderer sr;
     private Rigidbody2D rb;
+    private GameObject hand;
     private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
 
     [SerializeField]
@@ -33,6 +35,7 @@ public class Player : Entity
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        hand = transform.Find("Hand").gameObject;
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
     }
@@ -42,10 +45,14 @@ public class Player : Entity
     {
         // Do not overload the main method
         
+        // KeyCode for Input
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
         }
+
+        // Updates the hand position and handles different things about the hand
+        UpdateHand();
     }
 
     // For Updating player acording to the scene.
@@ -86,12 +93,25 @@ public class Player : Entity
     private void Interact()
     {
         if (canMove == false) return;
+
+        // Gets the list of interactables and then gets the first one if it's not null.
         List<Interactable> interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance).Where(x => x.CompareTag("Interactable")).Select(x => x.GetComponent<Interactable>()).OrderBy(x => Vector2.Distance(x.transform.position, transform.position)).ToList();
         if (interactables.FirstOrDefault() is Interactable interactable)
         {
+            // Interacts with the object.
             interactable.Interact();
         }
     }
+
+    private void UpdateHand()
+    {
+        // Updates the hand rotation/position
+        if (GameManager.Instance.MouseProperties is MouseProperties mouseProperties)
+        {
+            hand.transform.rotation = Quaternion.AngleAxis(mouseProperties.Angle, Vector3.forward);
+        }
+    }
+
     protected override void Attack()
     {
         Debug.Log("Attack Player");
