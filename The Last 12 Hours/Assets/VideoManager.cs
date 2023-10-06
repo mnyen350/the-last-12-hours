@@ -18,10 +18,4 @@ public class VideoManager : MonoBehaviour
 
         videoPlayer.Play();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
