@@ -1,0 +1,12 @@
+Mocks for requested and required screens:
+"Tasks for Minh:
+Inventory UI.
+Menu UI.
+Main menu UI."
+Additional needed UI was "Game Over" per Assignment specifications.
+
+Feel free to give feedback on potential changes.
+
+Proper UI/Scenes can be made after everyone agrees to the UI mock.
+
+There was an attempt to keep a rather simple UI, mainly using white/black with the exception of logos.
