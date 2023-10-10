@@ -32,6 +32,9 @@ public class Player : Entity
 
     private Animator animator;
 
+    [SerializeField]
+    private Sound[] sounds;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -46,6 +49,9 @@ public class Player : Entity
         animator = GetComponent<Animator>();
         hand = transform.Find("Hand").gameObject;
         flashlight = hand.GetComponentInChildren<Light2D>();
+
+        Sound.InitializeSounds(gameObject, sounds);
+
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
     }
@@ -72,7 +78,7 @@ public class Player : Entity
     // For Updating player acording to the scene.
     public void UpdateScene()
     {
-        bool isNoPlayerScene = NO_PLAYER_SCENES.Contains(GameManager.Instance.playerSceneIndex);
+        bool isNoPlayerScene = NO_PLAYER_SCENES.Contains(GameManager.Instance.CurrentScene.buildIndex);
 
         // Could use !isNoPlayerScene, but this looks better for scaling code.
         sr.enabled = isNoPlayerScene ? false : true;
@@ -98,6 +104,12 @@ public class Player : Entity
         {
             sr.flipX = true;
         }
+
+        if (movement.magnitude > 0)
+        {
+            PlaySound("Walking");
+        }
+        else { StopSound("Walking"); }
     }
 
     void FixedUpdate()
@@ -152,6 +164,23 @@ public class Player : Entity
     // Enables and disables the flashlight depending of the state of this.
     private void TurnFlashLight()
     {
+        PlaySound("Turn-On");
         flashlight.enabled = !flashlight.enabled;
+    }
+
+    // Plays the sound based on the name, if doesn't match won't be played
+    private void PlaySound(string soundName)
+    {
+        Sound sound = Array.Find(sounds, x => x.Name == soundName);
+        if (sound == null || sound.Source.isPlaying) return;
+        sound.Source.Play();
+    }
+
+    // Stops the sound based on the name, if doesn't match won't be stopped
+    private void StopSound(string soundName)
+    {
+        Sound sound = Array.Find(sounds, x => x.Name == soundName);
+        if (sound == null || !sound.Source.isPlaying) return;
+        sound.Source.Stop();
     }
 }

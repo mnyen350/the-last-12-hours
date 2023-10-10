@@ -44,7 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f86b6232d86ac74381d07441af3ad4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSceneIndex: 0
+  backgroundMusic:
+  - Name: Chapter1
+    Clip: {fileID: 8300000, guid: a68d3ffa4cbcb0e48a8d6cb4942070c5, type: 3}
+    Volume: 0.04
+    Pitch: 0.69
+    Loop: 0
+    Source: {fileID: 0}
   OutlineInteract:
     Distance: 1.23
     Outline: {fileID: 2100000, guid: 82ea68a891e7c26409bab7973a21460d, type: 2}

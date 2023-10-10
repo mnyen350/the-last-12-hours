@@ -10,6 +10,8 @@ public abstract class Interactable : MonoBehaviour
     public bool Outline = true;
     public abstract void Interact();
 
+    public AudioSource InteractSound;
+
     // Gets all the components type SpriteRenderer to the array
     private void Awake()
     {
@@ -43,6 +45,14 @@ public abstract class Interactable : MonoBehaviour
         foreach (SpriteRenderer renderer in spriteRenderers)
         {
             renderer.material = outlineMaterial;
+        }
+    }
+
+    public void PlayInteractSound()
+    {
+        if (InteractSound != null)
+        {
+            InteractSound.Play();
         }
     }
 }

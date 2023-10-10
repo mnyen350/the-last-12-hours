@@ -62,6 +62,37 @@ MonoBehaviour:
     - {fileID: 0}
     Items: []
   interactDistance: 0.75
+  sounds:
+  - Name: Walking
+    Clip: {fileID: 8300000, guid: 5eff8a886aab9d54299ce0562c09c3aa, type: 3}
+    Volume: 0.13
+    Pitch: 0.6
+    Loop: 1
+    Source: {fileID: 0}
+  - Name: Reload-Gun
+    Clip: {fileID: 8300000, guid: 6c1e263b1aef6824498107b8b0e06429, type: 3}
+    Volume: 0.15
+    Pitch: 1.03
+    Loop: 0
+    Source: {fileID: 0}
+  - Name: Pistol-Gunshot
+    Clip: {fileID: 8300000, guid: 59474939c20d6d04a9b420cd627273d8, type: 3}
+    Volume: 0.15
+    Pitch: 1.03
+    Loop: 0
+    Source: {fileID: 0}
+  - Name: Shotgun-Shot
+    Clip: {fileID: 8300000, guid: 2041f15985a98c84a89cf11f2550648d, type: 3}
+    Volume: 0.15
+    Pitch: 1.04
+    Loop: 0
+    Source: {fileID: 0}
+  - Name: Turn-On
+    Clip: {fileID: 8300000, guid: ce45308c0fb9ffb40ab2bc7579ccdcfc, type: 3}
+    Volume: 0.15
+    Pitch: 1.03
+    Loop: 0
+    Source: {fileID: 0}
 --- !u!212 &2289830049086549695
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -215,7 +246,7 @@ MonoBehaviour:
   - {x: 0.13538869, y: -0.4849929, z: 0}
   m_ShapePathHash: 719005741
   m_Mesh: {fileID: 0}
-  m_InstanceId: 40952
+  m_InstanceId: 55338
   m_LocalBounds:
     m_Center: {x: 0.06812896, y: -0.075132936, z: 0}
     m_Extent: {x: 0.15115556, y: 0.40985996, z: 0}

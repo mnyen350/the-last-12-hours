@@ -11,7 +11,7 @@ public class Inventory
     public bool CanOpenInventory { get; set; }
 
     // Hotbar array for fixed space for fast accessible items
-    [DoNotSerialize]
+    [HideInInspector]
     public Item[] Hotbar = new Item[3];
 
     // Items list for storing all the items

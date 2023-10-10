@@ -28,6 +28,8 @@ public class BoolInteraction : Interactable
 
         interacted = !interacted;
         if (collider && ChangeColliderState) collider.isTrigger = interacted;
+
+        PlayInteractSound();
     }
 
 }

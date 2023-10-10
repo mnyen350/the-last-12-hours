@@ -2,14 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [DoNotSerialize]
-    public int playerSceneIndex = 0;
+    // Field to get the currentScene to avoid code redundancy.
+    public Scene CurrentScene { get { return SceneManager.GetActiveScene(); } }
+
+    [SerializeField]
+    private Sound[] backgroundMusic;
 
     // Globally accessible mouse position, so we don't have to get it every time.
     [DoNotSerialize]
@@ -33,12 +37,11 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
 
-        playerSceneIndex = SceneManager.GetActiveScene().buildIndex;
-
         DontDestroyOnLoad(gameObject);
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        Sound.InitializeSounds(gameObject, backgroundMusic);
 
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void Update()
@@ -79,6 +82,19 @@ public class GameManager : MonoBehaviour
         SpawnPlayer();
         Player.Instance.UpdateScene();
 
+        // Plays and stops the background music acording to the scene name.
+        foreach(Sound sound in backgroundMusic)
+        {
+            if (sound.Name == CurrentScene.name)
+            {
+                sound.Source.Play();
+            }
+            else
+            {
+                sound.Source.Stop();
+            }
+        }
+
         camera = GameObject.Find("Camera").GetComponentInChildren<Camera>();
     }
 
@@ -86,8 +102,7 @@ public class GameManager : MonoBehaviour
     // Moves the player to the next scene and then spawns the player
     public static void NextScene()
     {
-        Instance.playerSceneIndex++;
-        SceneManager.LoadScene(Instance.playerSceneIndex);
+        SceneManager.LoadScene(Instance.CurrentScene.buildIndex + 1);
     }
 }
 
