@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6666493324534156624}
   - component: {fileID: -4549103671254204169}
   - component: {fileID: 2361128396122552531}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -234,22 +234,22 @@ MonoBehaviour:
   m_HasRenderer: 1
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
-  m_SelfShadows: 0
-  m_ApplyToSortingLayers: 000000001721c1609f3aef2d1f4b0c69a1f79bef13d182ce
+  m_SelfShadows: 1
+  m_ApplyToSortingLayers: 1721c1601f4b0c69a1f79bef
   m_ShapePath:
-  - {x: -0.024299426, y: -0.48456475, z: 0}
+  - {x: -0.0010754187, y: -0.48041588, z: 0}
   - {x: -0.018289477, y: -0.002257347, z: 0}
   - {x: -0.0830266, y: 0.334727, z: 0}
   - {x: 0.21928452, y: 0.3259395, z: 0}
   - {x: 0.15706205, y: 0.03883753, z: 0}
   - {x: 0.14062102, y: -0.26691592, z: 0}
-  - {x: 0.13538869, y: -0.4849929, z: 0}
-  m_ShapePathHash: 719005741
+  - {x: 0.13925949, y: -0.4798763, z: 0}
+  m_ShapePathHash: -1856811995
   m_Mesh: {fileID: 0}
-  m_InstanceId: 55338
+  m_InstanceId: 42174
   m_LocalBounds:
-    m_Center: {x: 0.06812896, y: -0.075132936, z: 0}
-    m_Extent: {x: 0.15115556, y: 0.40985996, z: 0}
+    m_Center: {x: 0.06812896, y: -0.072844446, z: 0}
+    m_Extent: {x: 0.15115556, y: 0.40757143, z: 0}
 --- !u!95 &2361128396122552531
 Animator:
   serializedVersion: 5
@@ -281,7 +281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1963865572013877357}
   - component: {fileID: 8103390448587954336}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -365,7 +365,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1504380156194575560}
   - component: {fileID: 1021930597535152292}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -407,7 +407,7 @@ MonoBehaviour:
   m_Intensity: 1.46
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 000000001721c1609f3aef2d1f4b0c69a1f79bef4b133f0213d182ce
+  m_ApplyToSortingLayers: 1721c1609f3aef2d1f4b0c69a1f79bef4b133f0200000000
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -475,7 +475,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6083288208030265316}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
