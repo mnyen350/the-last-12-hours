@@ -16,6 +16,9 @@ public class Player : Entity
     // Static reference to the instance
     public static Player Instance { get; private set; }
 
+    [SerializeField]
+    public Controls PlayerControls;
+
     private SpriteRenderer sr;
     private Rigidbody2D rb;
 
@@ -61,18 +64,31 @@ public class Player : Entity
     {
         // Do not overload the main method
 
-        // KeyCode for Input
-        if (Input.GetKeyDown(KeyCode.E))
+        // Updates for handling input operations.
+        UpdateInput();
+
+        // Updates the hand position and handles different things about the hand
+        UpdateHand();
+    }
+
+    public void UpdateInput()
+    {
+        // Interact with objects
+        if (Input.GetKeyDown(PlayerControls.Interact))
         {
             Interact();
         }
+        // Turn on/off the flashlight
+        if (Input.GetKeyDown(PlayerControls.Flashlight))
+        {
+            TurnFlashLight();
+        }
+
+        // Mouse left click for fire.
         if (Input.GetMouseButtonDown(0))
         {
             Fire();
         }
-
-        // Updates the hand position and handles different things about the hand
-        UpdateHand();
     }
 
     // For Updating player acording to the scene.
@@ -87,20 +103,18 @@ public class Player : Entity
     {
         if (canMove == false) return;
 
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
+        Vector2 movement = PlayerControls.GetMovement();
 
         // Using velocity so it doesn't get buggy on the walls
-        Vector2 movement = new Vector2(x, y);
         rb.velocity = movement * Speed;
 
         animator.SetFloat("speed", movement.magnitude);
 
-        if (x > 0)
+        if (movement.x > 0)
         {
             sr.flipX = false;
         }
-        else if (x < 0)
+        else if (movement.x < 0)
         {
             sr.flipX = true;
         }
@@ -158,7 +172,7 @@ public class Player : Entity
     // This is the use/fire/consume button
     private void Fire()
     {
-        TurnFlashLight();
+        
     }
 
     // Enables and disables the flashlight depending of the state of this.
@@ -182,5 +196,65 @@ public class Player : Entity
         Sound sound = Array.Find(sounds, x => x.Name == soundName);
         if (sound == null || !sound.Source.isPlaying) return;
         sound.Source.Stop();
+    }
+}
+
+[Serializable]
+public class Controls
+{
+    // Movement
+    public KeyCode Up = KeyCode.W;
+    public KeyCode Down = KeyCode.S;
+    public KeyCode Right = KeyCode.D;
+    public KeyCode Left = KeyCode.A;
+
+    // Equipment
+    public KeyCode HotbarFirst = KeyCode.Alpha1;
+    public KeyCode HotbarSecond = KeyCode.Alpha2;
+    public KeyCode HotbarThird = KeyCode.Alpha3;
+    public KeyCode Inventory = KeyCode.Tab;
+
+    // Flashlight
+    public KeyCode Flashlight = KeyCode.F;
+
+    // Use
+    public KeyCode Reload = KeyCode.R;
+    public KeyCode Heal = KeyCode.Q;
+    public KeyCode Interact = KeyCode.E;
+
+    public Vector2 GetMovement()
+    {
+        float vertical;
+        float horizontal;
+
+        // Vertical Movement
+        if (Input.GetKey(Up))
+        {
+            vertical = 1f;
+        }
+        else if (Input.GetKey(Down))
+        {
+            vertical = -1f;
+        }
+        else
+        {
+            vertical = 0f;
+        }
+
+        // Horizontal Movement
+        if (Input.GetKey(Right))
+        {
+            horizontal = 1f;
+        }
+        else if (Input.GetKey(Left))
+        {
+            horizontal = -1f;
+        }
+        else
+        {
+            horizontal = 0f;
+        }
+
+        return new Vector2(horizontal, vertical);
     }
 }
