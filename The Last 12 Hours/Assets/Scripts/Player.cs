@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
 
 [System.Serializable]
 public class Player : Entity
