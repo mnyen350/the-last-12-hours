@@ -115,9 +115,9 @@ public class GameManager : MonoBehaviour
     {
         if (postProcessing.profile.TryGet<ColorAdjustments>(out ColorAdjustments colorAdjustments))
         {
-            for (float i = colorAdjustments.postExposure.value; i > -5f; i -= 0.25f)
+            for (float i = colorAdjustments.postExposure.value; i > -5f; i -= 0.1f)
             {
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.025f);
                 colorAdjustments.postExposure.value = i;
             }
 
