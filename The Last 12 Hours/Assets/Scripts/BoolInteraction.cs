@@ -6,6 +6,8 @@ public class BoolInteraction : Interactable
 {
     private bool interacted = false;
 
+    public bool oneInteraction = false;
+
     [SerializeField]
     private GameObject firstState;
 
@@ -23,6 +25,8 @@ public class BoolInteraction : Interactable
     // Interacts with it and changes the state of the object.
     public override void Interact()
     {
+        if (interacted && oneInteraction) return;
+
         firstState.SetActive(interacted);
         secondState.SetActive(!interacted);
 
