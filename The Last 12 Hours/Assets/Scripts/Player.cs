@@ -12,13 +12,8 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class Player : Entity
 {
-    private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
-
     // Static reference to the instance
     public static Player Instance { get; private set; }
-
-    private SpriteRenderer sr;
-    private Rigidbody2D rb;
 
     [SerializeField]
     public Controls PlayerControls;
@@ -30,47 +25,55 @@ public class Player : Entity
     [SerializeField]
     public float interactDistance = 5;
 
-    private Animator animator;
-
     [SerializeField]
     private Sound[] sounds;
 
     public Inventory inventory;
-    private bool isMoving; 
     private bool IsInventoryOpen; 
     public int level;
 
     public Vector2 position => this.rb.position;
 
-    void Awake()
+    public void Reset()
     {
+        health = maxHealth;
+        IsInventoryOpen = false;
+    }
+
+    protected override void Awake()
+    {
+        maxHealth = 10;
+        Reset();
+
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+        
         Instance = this;
 
-        sr = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
         hand = transform.Find("Hand").gameObject;
         flashlight = hand.GetComponentInChildren<Light2D>();
+
+        OnStartMoving += () => PlaySound("Walking");
+        OnStopMoving += () => StopSound("Walking");
+        OnDeath += () => GameManager.LoadGameOverScene();
 
         Sound.InitializeSounds(gameObject, sounds);
 
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
+
+        base.Awake();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Do not overload the main method
-
         // Updates for handling input operations.
         UpdateInput();
-
         // Updates the hand position and handles different things about the hand
         UpdateHand();
     }
@@ -109,46 +112,10 @@ public class Player : Entity
         }
     }
 
-    // For Updating player acording to the scene.
-    public void UpdateScene()
-    {
-        bool isNoPlayerScene = NO_PLAYER_SCENES.Contains(GameManager.Instance.CurrentScene.buildIndex);
-
-        // Could use !isNoPlayerScene, but this looks better for scaling code.
-        sr.enabled = isNoPlayerScene ? false : true;
-    }
     private void UpdateMove()
     {
-        if (canMove == false) 
-            return;
-
         Vector2 movement = PlayerControls.GetMovement();
-
-        // Using velocity so it doesn't get buggy on the walls
-        rb.velocity = movement * Speed;
-        //Debug.Log("rb.velocity player" + rb.velocity + " " + Speed);
-
-        animator.SetFloat("speed", movement.magnitude);
-
-        if (movement.x > 0)
-        {
-            sr.flipX = false;
-        }
-        else if (movement.x < 0)
-        {
-            sr.flipX = true;
-        }
-
-        if (!isMoving && movement.magnitude > 0)
-        {
-            isMoving = true;
-            PlaySound("Walking");
-        }
-        else if (isMoving && movement.magnitude <= 0)
-        {
-            isMoving = false;
-            StopSound("Walking");
-        }
+        this.ApplyMovement(movement);
     }
 
     void FixedUpdate()
@@ -158,9 +125,6 @@ public class Player : Entity
     }
     private void Interact()
     {
-        if (canMove == false) 
-            return;
-
         // Gets the list of interactables and then gets the first one if it's not null.
         var interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance)
             //.Where(x => x.CompareTag("Interactable"))
@@ -180,6 +144,17 @@ public class Player : Entity
         }
     }
 
+    public void EnterLevel(int level)
+    {
+        if (level == 1)
+            Reset();
+
+        // move to spawn point of level
+        var spawn = GameObject.Find("Spawnpoint");
+        if (spawn != null)
+            transform.position = spawn.transform.position;
+    }
+
     protected override void Attack()
     {
         Debug.Log("Attack Player");
@@ -192,13 +167,14 @@ public class Player : Entity
 
     protected void Heal(int healAmount)
     {
-        _currentHealth = Mathf.Clamp(_currentHealth + healAmount, 0, _maxHealth);
+        health = Mathf.Clamp(health + healAmount, 0, maxHealth);
         Debug.Log("Player healed");
     }
 
     public override void ReceiveAttack(Entity source, int damage)
     {
-        throw new NotImplementedException();
+        base.ReceiveAttack(source, damage);
+        Debug.Log($"player received damage, hp: {health} / {maxHealth}");
     }
 
     // This is the use/fire/consume button

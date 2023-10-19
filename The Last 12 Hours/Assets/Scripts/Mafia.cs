@@ -24,6 +24,11 @@ public class Mafia : Entity
     protected override void Walk() 
     {
 
-    } 
+    }
+
+    public override void ReceiveAttack(Entity source, int damage)
+    {
+
+    }
 
 }

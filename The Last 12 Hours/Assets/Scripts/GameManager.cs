@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -66,21 +66,10 @@ public class GameManager : MonoBehaviour
         };
     }
 
-    // Moves the player to the spawnpoint
-    public void SpawnPlayer()
-    {
-        if (GameObject.Find("Spawnpoint") is GameObject spawn)
-        {
-            Player.Instance.transform.position = spawn.transform.position;
-        }
-    }
-
     // An event when a scene is loaded.
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        SpawnPlayer();
-        Player.Instance.UpdateScene();
-
+        Debug.Log("Scene loaded");
         // Plays and stops the background music acording to the scene name.
         foreach(Sound sound in backgroundMusic)
         {
@@ -101,9 +90,20 @@ public class GameManager : MonoBehaviour
     public static void LoadSettingsScene() => SceneManager.LoadScene("SettingsMenu");
     public static void LoadLevelScene(int level)
     {
-        Player.Instance.level = level;
+        UnityAction<Scene, LoadSceneMode> enterLevelCallback = null;
+        enterLevelCallback = (a,b) =>
+        {
+            Player.Instance.EnterLevel(level);
+            // now unload this event
+            SceneManager.sceneLoaded -= enterLevelCallback;
+        };
+
+        SceneManager.sceneLoaded += enterLevelCallback;
         SceneManager.LoadScene($"Chapter{level}");
+        SceneManager.LoadScene("HealthUI", LoadSceneMode.Additive);
+
     }
+    public static void LoadGameOverScene() => SceneManager.LoadScene("GameOverMenu");
 }
 
 [Serializable]
