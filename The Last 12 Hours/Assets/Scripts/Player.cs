@@ -12,22 +12,20 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class Player : Entity
 {
+    private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
+
     // Static reference to the instance
     public static Player Instance { get; private set; }
-
-    [SerializeField]
-    public Controls PlayerControls;
 
     private SpriteRenderer sr;
     private Rigidbody2D rb;
 
+    [SerializeField]
+    public Controls PlayerControls;
+
     // Hand of the player and components
     private GameObject hand;
     private Light2D flashlight;
-
-    private static readonly int[] NO_PLAYER_SCENES = new int[] { 0 };
-
-    public Inventory Inventory;
 
     [SerializeField]
     public float interactDistance = 5;
@@ -36,6 +34,13 @@ public class Player : Entity
 
     [SerializeField]
     private Sound[] sounds;
+
+    public Inventory inventory;
+    private bool isMoving; 
+    private bool IsInventoryOpen; 
+    public int level;
+
+    public Vector2 position => this.rb.position;
 
     void Awake()
     {
@@ -72,6 +77,20 @@ public class Player : Entity
 
     public void UpdateInput()
     {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (!IsInventoryOpen)
+            {
+                IsInventoryOpen = true;
+                SceneManager.LoadScene("InventoryMenu", LoadSceneMode.Additive);
+            }
+            else
+            {
+                IsInventoryOpen = false;
+                SceneManager.UnloadSceneAsync("InventoryMenu");
+            }
+        }
+
         // Interact with objects
         if (Input.GetKeyDown(PlayerControls.Interact))
         {
@@ -100,12 +119,14 @@ public class Player : Entity
     }
     private void UpdateMove()
     {
-        if (canMove == false) return;
+        if (canMove == false) 
+            return;
 
         Vector2 movement = PlayerControls.GetMovement();
 
         // Using velocity so it doesn't get buggy on the walls
         rb.velocity = movement * Speed;
+        //Debug.Log("rb.velocity player" + rb.velocity + " " + Speed);
 
         animator.SetFloat("speed", movement.magnitude);
 
@@ -118,11 +139,16 @@ public class Player : Entity
             sr.flipX = true;
         }
 
-        if (movement.magnitude > 0)
+        if (!isMoving && movement.magnitude > 0)
         {
+            isMoving = true;
             PlaySound("Walking");
         }
-        else { StopSound("Walking"); }
+        else if (isMoving && movement.magnitude <= 0)
+        {
+            isMoving = false;
+            StopSound("Walking");
+        }
     }
 
     void FixedUpdate()
@@ -132,15 +158,17 @@ public class Player : Entity
     }
     private void Interact()
     {
-        if (canMove == false) return;
+        if (canMove == false) 
+            return;
 
         // Gets the list of interactables and then gets the first one if it's not null.
-        List<Interactable> interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance).Where(x => x.CompareTag("Interactable")).Select(x => x.GetComponent<Interactable>()).OrderBy(x => Vector2.Distance(x.transform.position, transform.position)).ToList();
-        if (interactables.FirstOrDefault() is Interactable interactable)
-        {
-            // Interacts with the object.
-            interactable.Interact();
-        }
+        var interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance)
+            //.Where(x => x.CompareTag("Interactable"))
+            .Select(x => x.GetComponent<Interactable>())
+            .Where(x => x != null)
+            .OrderBy(x => Vector2.Distance(x.transform.position, transform.position));
+
+        interactables.FirstOrDefault()?.Interact();
     }
 
     private void UpdateHand()
@@ -166,6 +194,11 @@ public class Player : Entity
     {
         _currentHealth = Mathf.Clamp(_currentHealth + healAmount, 0, _maxHealth);
         Debug.Log("Player healed");
+    }
+
+    public override void ReceiveAttack(Entity source, int damage)
+    {
+        throw new NotImplementedException();
     }
 
     // This is the use/fire/consume button

@@ -15,9 +15,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Chapter2.unity
     guid: 7b7d508af20ba5047adc711ec04cd51a
   - enabled: 1
+    path: Assets/Scenes/UI/SettingsMenu.unity
+    guid: 2d6b03cdd81f3c74a82effc04aa69fad
+  - enabled: 1
     path: Assets/Scenes/Chapter3.unity
     guid: 072ba19bc876d464cad10ce407b9379f
   - enabled: 1
-    path: Assets/Scenes/Chapter4.unity
-    guid: 98be953314812d348b636892ea5edee3
+    path: Assets/Scenes/UI/InventoryMenu.unity
+    guid: 239f72e383e30fc4a9c0d36b62df5898
+  - enabled: 1
+    path: Assets/Scenes/UI/GameOverMenu.unity
+    guid: 1206e601cd6274d40bf9a852a6c9410d
   m_configObjects: {}

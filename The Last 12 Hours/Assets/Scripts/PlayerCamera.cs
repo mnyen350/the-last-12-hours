@@ -5,19 +5,12 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public static PlayerCamera Instance;
-
+    [SerializeField]
     private CinemachineVirtualCamera virtualCamera;
-
-    private CinemachineBasicMultiChannelPerlin camMCPerlin;
     // Start is called before the first frame update
     void Start()
     {
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
-
-        camMCPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-
-        Instance = this;
     }
 
     // Update is called once per frame
@@ -27,31 +20,5 @@ public class PlayerCamera : MonoBehaviour
         {
             virtualCamera.Follow = player.transform;
         }
-    }
-
-    // Shakes the camera, default values to intesity and seconds, if seconds is more than zero it uses the coroutine.
-    public void StartShakeCamera(float intensity = 1, float seconds = 0)
-    {
-        if (camMCPerlin.m_AmplitudeGain > 0) return;
-
-        camMCPerlin.m_AmplitudeGain = intensity;
-
-        if (seconds > 0)
-        {
-            StartCoroutine(ShakeCameraDelayStop(seconds));
-        }
-    }
-
-    // For stopping the shake
-    public void StopShakeCamera()
-    {
-        camMCPerlin.m_AmplitudeGain = 0;
-    }
-
-    // Waits for the time and then stops the shaking
-    private IEnumerator ShakeCameraDelayStop(float time)
-    {
-        yield return new WaitForSeconds(time);
-        StopShakeCamera();
     }
 }

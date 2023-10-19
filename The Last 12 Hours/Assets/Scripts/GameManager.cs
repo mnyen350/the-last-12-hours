@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -98,34 +97,13 @@ public class GameManager : MonoBehaviour
         camera = GameObject.Find("Camera").GetComponentInChildren<Camera>();
     }
 
-
-    // Moves the player to the next scene and then spawns the player
-    public static void NextScene()
+    public static void LoadMainMenuScene() => SceneManager.LoadScene(0);
+    public static void LoadSettingsScene() => SceneManager.LoadScene("SettingsMenu");
+    public static void LoadLevelScene(int level)
     {
-        if (GameObject.Find("Post-Processing").GetComponentInChildren<Volume>() is Volume processing)
-        {
-            Instance.StartCoroutine(NextSceneTransision(processing));
-            return;
-        }
-        SceneManager.LoadScene(Instance.CurrentScene.buildIndex + 1);
+        Player.Instance.level = level;
+        SceneManager.LoadScene($"Chapter{level}");
     }
-
-    // Transisions to the next scene with effect.
-    private static IEnumerator NextSceneTransision(Volume postProcessing)
-    {
-        if (postProcessing.profile.TryGet<ColorAdjustments>(out ColorAdjustments colorAdjustments))
-        {
-            for (float i = colorAdjustments.postExposure.value; i > -5f; i -= 0.1f)
-            {
-                yield return new WaitForSeconds(0.025f);
-                colorAdjustments.postExposure.value = i;
-            }
-
-            SceneManager.LoadScene(Instance.CurrentScene.buildIndex + 1);
-        }
-        yield return null;
-    }
-
 }
 
 [Serializable]

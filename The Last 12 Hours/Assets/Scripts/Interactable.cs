@@ -7,10 +7,25 @@ public abstract class Interactable : MonoBehaviour
 {
     private SpriteRenderer[] spriteRenderers;
 
-    public bool Outline = true;
-    public abstract void Interact();
+    protected new BoxCollider2D collider = null;
+    protected bool interacted = false;
 
-    public AudioSource InteractSound;
+    public bool outline = true;
+
+    public AudioSource InteractSound; 
+    public bool ChangeColliderState = true;
+
+    protected virtual void Start()
+    {
+        collider = GetComponent<BoxCollider2D>();
+    }
+
+    public virtual void Interact()
+    {
+        interacted = !interacted;
+        if (collider && ChangeColliderState)
+            collider.isTrigger = interacted;
+    }
 
     // Gets all the components type SpriteRenderer to the array
     private void Awake()
@@ -20,9 +35,8 @@ public abstract class Interactable : MonoBehaviour
 
     private void Update()
     {
-        if (Outline) CheckOutline();
+        if (outline) CheckOutline();
     }
-
 
     // Constantly check if a player is near the interactable.
     private void CheckOutline()
@@ -50,9 +64,6 @@ public abstract class Interactable : MonoBehaviour
 
     public void PlayInteractSound()
     {
-        if (InteractSound != null)
-        {
-            InteractSound.Play();
-        }
+        InteractSound?.Play();
     }
 }
