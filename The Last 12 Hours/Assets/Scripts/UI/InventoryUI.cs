@@ -32,36 +32,32 @@ public class InventoryUI : MonoBehaviour
 
     private void Inventory_OnChange()
     {
-        UpdateEquipment();
+        UpdateItems("Equipment", i => i.isEquipment);
+        UpdateItems("InventorySlot", i => !i.isEquipment);
     }
 
-    private void UpdateEquipment()
+    private void UpdateItems(string tag, Func<Item, bool> predicate)
     {
-        var equipmentSlots = GameObject
-            .FindGameObjectsWithTag("Equipment")
+        var slots = GameObject
+            .FindGameObjectsWithTag(tag)
             .OrderBy(x => x.name)
             .Select(x => x.GetComponent<Image>())
             .ToArray();
 
-        var equipment = player.inventory
-            .Where(i => i.isEquipment)
+        var items = player.inventory
+            .Where(i => predicate(i))
             .ToArray();
 
-        // should never happen
-        if (equipment.Length > equipmentSlots.Length)
+        // limited by slots length
+        for (int i = 0; i < slots.Length; i++)
         {
-            Debug.LogWarning("More equipment in inventory than equipment slots in UI");
-        }
+            var cws = slots[i].GetComponent<InventoryItemSlot>();
+            var img = slots[i].GetComponent<Image>();
 
-        for (int i = 0; i < equipmentSlots.Length; i++)
-        {
-            var cws = equipmentSlots[i].GetComponent<ClickWeapon>();
-            var img = equipmentSlots[i].GetComponent<Image>();
-
-            if (i < equipment.Length)
+            if (i < items.Length)
             {
-                cws.weaponType = equipment[i].type;
-                img.sprite = equipment[i].sprite;
+                cws.itemType = items[i].type;
+                img.sprite = items[i].sprite;
                 img.enabled = true;
             }
             else

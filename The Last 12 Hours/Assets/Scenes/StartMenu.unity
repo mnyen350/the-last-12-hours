@@ -705,6 +705,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -65932803, guid: e9e134760786df24092cb6c78dbf220e, type: 3}
     - target: {fileID: 8270301433335668291, guid: 3ce1327104220da4eb8a253e762e0b7c, type: 3}
+      propertyPath: ItemSprites.Bandage
+      value: 
+      objectReference: {fileID: 21300000, guid: 64587ff823121c84695e9810f3e4dd51, type: 3}
+    - target: {fileID: 8270301433335668291, guid: 3ce1327104220da4eb8a253e762e0b7c, type: 3}
       propertyPath: ItemSprites.Flashlight
       value: 
       objectReference: {fileID: 160200797, guid: e9e134760786df24092cb6c78dbf220e, type: 3}

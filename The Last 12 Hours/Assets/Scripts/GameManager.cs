@@ -128,6 +128,7 @@ public class ItemSprites
     public Sprite Knife;
     public Sprite Gun;
     public Sprite Axe;
+    public Sprite Bandage;
 }
 
 public class MouseProperties

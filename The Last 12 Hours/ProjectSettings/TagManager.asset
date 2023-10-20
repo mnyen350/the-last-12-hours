@@ -7,6 +7,7 @@ TagManager:
   - Interactable
   - HP
   - Equipment
+  - InventorySlot
   layers:
   - Default
   - TransparentFX

@@ -28,6 +28,7 @@ public class Inventory : IEnumerable<Item>
     public void Add(Item item)
     {
         var existing = Get(item.type);
+        item.amount = Math.Max(1, item.amount); // sanity helper
 
         if (existing != null)
         {
@@ -40,13 +41,14 @@ public class Inventory : IEnumerable<Item>
             OnAddItem?.Invoke(item);
         }
 
+        Debug.Log($"Item {item.type} was added to the inventory, amount={item.amount}");
         OnChange?.Invoke();
     }
 
     public void Remove(ItemType type, int amount = 1)
     {
         var existing = Get(type);
-        if (existing == null)
+        if (existing?.type == null)
             return;
 
         if (existing.amount > amount)

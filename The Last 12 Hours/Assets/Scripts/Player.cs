@@ -39,12 +39,38 @@ public class Player : Entity
     public int level { get; private set; }
     public Inventory inventory { get; private set; }
 
+    public bool flashlight
+    {
+        get => GetComponentInChildren<Light2D>()?.enabled ?? false;
+        set
+        {
+            var light = GetComponentInChildren<Light2D>();
+            if (light)
+                light.enabled = value;
+        }
+    }
+
     public event Action OnChangeWeapon;
-    public event Action OnUseWeapon;
 
     public void ChangeWeapon(ItemType type)
     {
         activeWeapon = type;
+
+        var sr = player.hand.GetComponentInChildren<SpriteRenderer>();
+        if (type == ItemType.Undefined)
+        {
+            sr.enabled = false;
+        }
+        else
+        {            
+            // disable flashlight if weapon isn't flashlight
+            if (type != ItemType.Flashlight)
+                flashlight = false;
+
+            sr.sprite = Item.GetSprite(type);
+            sr.enabled = true;
+        }
+
         OnChangeWeapon?.Invoke();
     }
 
@@ -55,6 +81,8 @@ public class Player : Entity
 
     protected override void Awake()
     {
+        Debug.Log("Player Awake()");
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -69,7 +97,7 @@ public class Player : Entity
         OnStopMoving += () => StopSound("Walking");
         OnDeath += () => GameManager.LoadGameOverScene();
 
-        ChangeWeapon(ItemType.Flashlight);
+        ChangeWeapon(ItemType.Undefined);
         Reset();
 
         Sound.InitializeSounds(gameObject, sounds);
@@ -111,7 +139,11 @@ public class Player : Entity
         // Turn on/off the flashlight
         if (Input.GetKeyDown(PlayerControls.Flashlight))
         {
-            OnUseWeapon?.Invoke();
+            if (this.activeWeapon != ItemType.Undefined)
+            {
+                var weapon = this.inventory.Get(this.activeWeapon);
+                weapon?.UseWeaponAttack();
+            }
         }
     }
 

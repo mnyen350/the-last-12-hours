@@ -15,8 +15,17 @@ public abstract class Entity : MonoBehaviour
 
     [field: SerializeField]
     public int maxHealth { get; protected set; }
-    //[field: SerializeField]
-    public int health { get; protected set; }
+    private int _health;
+    public int health
+    {
+        get => _health;
+        set
+        {
+            _health = Math.Min(maxHealth, value);
+            OnHealthChange?.Invoke();
+        } 
+    }
+
     public abstract int attack { get; }
     [field: SerializeField]
     public float visionDistance { get; protected set; } //is this pixels? 
@@ -31,6 +40,7 @@ public abstract class Entity : MonoBehaviour
     public event Action OnStopMoving;
     public event Action OnDeath;
     public event Action<Entity, int> OnAttacked;
+    public event Action OnHealthChange;
 
     public IEnumerable<T> GetNearby<T>(float distance) where T : MonoBehaviour =>
             Physics2D.OverlapCircleAll(transform.position, distance)

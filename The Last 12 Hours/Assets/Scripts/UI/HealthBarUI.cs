@@ -20,16 +20,16 @@ public class HealthBarUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player.OnAttacked += UpdateHealth;
-        UpdateHealth(null, 0);
+        player.OnHealthChange += UpdateHealth;
+        UpdateHealth();
     }
 
     void OnDestroy()
     {
-        player.OnAttacked -= UpdateHealth;
+        player.OnHealthChange -= UpdateHealth;
     }
 
-    void UpdateHealth(Entity e, int d)
+    void UpdateHealth()
     {
         var hearts = GameObject
             .FindGameObjectsWithTag("HP")
