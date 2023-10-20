@@ -1,59 +1,82 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ItemType
 {
-    // Auto Consumables
-    Ammo = 1,
-
-    // Manual Consumables
-    Battery = 1000,
+    Undefined = 0,
+    Ammo,
+    Battery,
     Bandage, 
-
-    // Equipment
-    Flashlight = 2000,
+    Flashlight,
     Axe,
     Knife,
     Gun
 }
 public class Item : MonoBehaviour
 {
-    public ItemType Type;
-    public bool IsEquipment
-    {
-        get => (Type >= ItemType.Flashlight);
-    }
-    public bool IsConsumable
+    private static ItemType[] AUTO_CONSUME_TYPES = new[] { ItemType.Ammo };
+    private static ItemType[] CONSUMABLES_TYPES = new[] { ItemType.Ammo, ItemType.Battery, ItemType.Bandage };
+    private static ItemType[] EQUIPMENT_TYPES = new[] { ItemType.Flashlight, ItemType.Axe, ItemType.Knife, ItemType.Gun };
+
+    public Player player => Player.Instance;
+    public GameManager gameManager => GameManager.Instance;
+
+    [field: SerializeField]
+    public ItemType type { get; private set; }
+    [field: SerializeField]
+    public int amount { get; set; }
+
+    public string itemName => type.ToString();
+
+    public bool isEquipment => EQUIPMENT_TYPES.Contains(type);
+    public bool IsConsumable => CONSUMABLES_TYPES.Contains(type);
+    public bool isAutoConsume => AUTO_CONSUME_TYPES.Contains(type);
+
+    public Sprite sprite
     {
         get
         {
-            if (Type < ItemType.Battery) return true; // Auto Consumables
-            else if (Type < ItemType.Flashlight) return true; // Manual Consumables
-            else return false;
+            switch (type)
+            {
+                case ItemType.Axe: return gameManager.ItemSprites.Axe;
+                case ItemType.Gun: return gameManager.ItemSprites.Axe;
+                case ItemType.Knife: return gameManager.ItemSprites.Axe;
+                case ItemType.Flashlight: return gameManager.ItemSprites.Flashlight;
+            }
+            return null;
         }
     }
 
-    public int Amount { get; set; }
-
-    public string Name;
-
-    /*
-     * TO ADD
-     * 
-     * additional item info/fields likeeeee 
-     * bandage healing amount
-     * weapon range
-     * weapon damage
-     * ammo count -> count of item? 
-     * isStacking?? 
-     * 
-     */
-
-    public bool IsAutoConsume
+    public void Start()
     {
-        get => (Type < ItemType.Battery); // Auto Consumables
+        var sprite = this.sprite;
+        if (sprite != null)
+            GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    public void Pickup()
+    {
+        Debug.Log("Player is picking up " + itemName);
+
+        // remove from world
+        Destroy(this.gameObject);
+
+        if (isAutoConsume)
+        {
+            Debug.Log($"Auto consuming item ${type}");
+            switch (type)
+            {
+                case ItemType.Ammo:
+                    break;
+            }
+        }
+        else
+        {
+            player.inventory.Add(this);
+        }
     }
 
     public void Use()

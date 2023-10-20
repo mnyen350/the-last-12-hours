@@ -6,72 +6,60 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
-public class Inventory
+public class Inventory : IEnumerable<Item>
 {
-    public bool CanOpenInventory { get; set; }
+    private List<Item> _items;
 
-    // Hotbar array for fixed space for fast accessible items
-    [HideInInspector]
-    public Item[] Hotbar = new Item[3];
+    public Inventory()
+    {
+        _items = new List<Item>();
+    }
 
-    // Items list for storing all the items
-    public List<Item> Items = new List<Item>();
+    IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
+    public IEnumerator<Item> GetEnumerator() => _items.GetEnumerator();
+    public Item Get(ItemType type) => this.FirstOrDefault(item => item.type == type);
+
+    public event Action<Item> OnAddItem;
+    public event Action<Item> OnRemoveItem;
+    public event Action<Item> OnUpdateItem;
+    public event Action OnChange;
 
     // Add items to the list
-    public void AddItems(Item item)
+    public void Add(Item item)
     {
-        if (IsValidItem(item, out Item existItem))
+        var existing = Get(item.type);
+
+        if (existing != null)
         {
-            existItem.Amount += item.Amount;
+            existing.amount += item.amount;
+            OnUpdateItem?.Invoke(existing);
         }
         else
         {
-            Items.Add(item);
+            _items.Add(item);
+            OnAddItem?.Invoke(item);
         }
+
+        OnChange?.Invoke();
     }
 
-    // Set items to the hotbar (might cause an issue because of index)
-    public void SetItemHotBar(Item item, int index)
+    public void Remove(ItemType type, int amount = 1)
     {
-        Hotbar[index] = item;
-    }
+        var existing = Get(type);
+        if (existing == null)
+            return;
 
-    // Use the hotbar item, first checking it and then passing it to UseItem
-    public void UseHotBarItem(int index)
-    {
-        if (Hotbar[index] is Item item && item != null)
+        if (existing.amount > amount)
         {
-            UseItem(item);
+            existing.amount -= amount;
+            OnUpdateItem?.Invoke(existing);
         }
-    }
-
-    // Use item from the items list and handle the amounts.
-    public void UseItem(Item item)
-    {
-        if (!IsValidItem(item, out Item existItem)) return;
-
-        existItem.Use();
-
-        if (item.IsEquipment) return;
-
-        existItem.Amount--;
-
-        if (item.Amount <= 0)
+        else
         {
-            int indexInHotbar = Array.FindIndex(Hotbar, x => x == existItem);
-            if (indexInHotbar != -1)
-            {
-                Hotbar[indexInHotbar] = null;
-            }
-
-            Items.Remove(existItem);
+            _items.Remove(existing);
+            OnRemoveItem?.Invoke(existing);
         }
-    }
 
-    // Validates if the item exists in the inventory
-    private bool IsValidItem(Item item, out Item existItem)
-    {
-        existItem = Items.FirstOrDefault(x => x.Name == item.Name);
-        return existItem != null;
+        OnChange?.Invoke();
     }
 }

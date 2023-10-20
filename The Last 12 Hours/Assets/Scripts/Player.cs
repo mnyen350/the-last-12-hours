@@ -14,13 +14,18 @@ public class Player : Entity
 {
     // Static reference to the instance
     public static Player Instance { get; private set; }
+    private static Action _afterInstanceCallback;
+
+    public static void AfterInstance(Action action)
+    {
+        if (Instance != null)
+            action();
+        else
+            _afterInstanceCallback += action;
+    }
 
     [SerializeField]
     public Controls PlayerControls;
-
-    // Hand of the player and components
-    private GameObject hand;
-    private Light2D flashlight;
 
     [SerializeField]
     public float interactDistance = 5;
@@ -28,43 +33,52 @@ public class Player : Entity
     [SerializeField]
     private Sound[] sounds;
 
-    public Inventory inventory;
-    private bool IsInventoryOpen; 
-    public int level;
+    public GameObject hand { get; private set; }
+    public override int attack => 1;
+    public ItemType activeWeapon { get; private set; }
+    public int level { get; private set; }
+    public Inventory inventory { get; private set; }
 
-    public Vector2 position => this.rb.position;
+    public event Action OnChangeWeapon;
+    public event Action OnUseWeapon;
+
+    public void ChangeWeapon(ItemType type)
+    {
+        activeWeapon = type;
+        OnChangeWeapon?.Invoke();
+    }
 
     public void Reset()
     {
         health = maxHealth;
-        IsInventoryOpen = false;
     }
 
     protected override void Awake()
     {
-        maxHealth = 10;
-        Reset();
-
-
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
-        
-        Instance = this;
 
+        Instance = this;
         hand = transform.Find("Hand").gameObject;
-        flashlight = hand.GetComponentInChildren<Light2D>();
+        inventory = new Inventory();
 
         OnStartMoving += () => PlaySound("Walking");
         OnStopMoving += () => StopSound("Walking");
         OnDeath += () => GameManager.LoadGameOverScene();
 
+        ChangeWeapon(ItemType.Flashlight);
+        Reset();
+
         Sound.InitializeSounds(gameObject, sounds);
 
         // This is for not destroying the player when the scene is changed
         DontDestroyOnLoad(this);
+
+        _afterInstanceCallback?.Invoke();
+        _afterInstanceCallback = null;
 
         base.Awake();
     }
@@ -78,61 +92,34 @@ public class Player : Entity
         UpdateHand();
     }
 
+
     public void UpdateInput()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (!IsInventoryOpen)
-            {
-                IsInventoryOpen = true;
-                SceneManager.LoadScene("InventoryMenu", LoadSceneMode.Additive);
-            }
-            else
-            {
-                IsInventoryOpen = false;
-                SceneManager.UnloadSceneAsync("InventoryMenu");
-            }
+            InventoryUI.Enabled = !InventoryUI.Enabled;
         }
 
         // Interact with objects
         if (Input.GetKeyDown(PlayerControls.Interact))
         {
-            Interact();
+            // Gets the list of interactables and then gets the first one if it's not null.
+            var interactable = GetNearby<Interactable>(interactDistance).FirstOrDefault();
+            interactable?.Interact();
         }
+
         // Turn on/off the flashlight
         if (Input.GetKeyDown(PlayerControls.Flashlight))
         {
-            TurnFlashLight();
+            OnUseWeapon?.Invoke();
         }
-
-        // Mouse left click for fire.
-        if (Input.GetMouseButtonDown(0))
-        {
-            Fire();
-        }
-    }
-
-    private void UpdateMove()
-    {
-        Vector2 movement = PlayerControls.GetMovement();
-        this.ApplyMovement(movement);
     }
 
     void FixedUpdate()
     {
         // Using FixedUpdate to get a Physics acurate movement.
-        UpdateMove();
-    }
-    private void Interact()
-    {
-        // Gets the list of interactables and then gets the first one if it's not null.
-        var interactables = Physics2D.OverlapCircleAll(transform.position, interactDistance)
-            //.Where(x => x.CompareTag("Interactable"))
-            .Select(x => x.GetComponent<Interactable>())
-            .Where(x => x != null)
-            .OrderBy(x => Vector2.Distance(x.transform.position, transform.position));
-
-        interactables.FirstOrDefault()?.Interact();
+        var movement = PlayerControls.GetMovement();
+        this.ApplyMovement(movement);
     }
 
     private void UpdateHand()
@@ -146,6 +133,7 @@ public class Player : Entity
 
     public void EnterLevel(int level)
     {
+        this.level = level;
         if (level == 1)
             Reset();
 
@@ -153,16 +141,6 @@ public class Player : Entity
         var spawn = GameObject.Find("Spawnpoint");
         if (spawn != null)
             transform.position = spawn.transform.position;
-    }
-
-    protected override void Attack()
-    {
-        Debug.Log("Attack Player");
-    }
-
-    protected override void Walk()
-    {
-        Debug.Log("Walk Player");
     }
 
     protected void Heal(int healAmount)
@@ -177,33 +155,20 @@ public class Player : Entity
         Debug.Log($"player received damage, hp: {health} / {maxHealth}");
     }
 
-    // This is the use/fire/consume button
-    private void Fire()
-    {
-        
-    }
-
-    // Enables and disables the flashlight depending of the state of this.
-    private void TurnFlashLight()
-    {
-        PlaySound("Turn-On");
-        flashlight.enabled = !flashlight.enabled;
-    }
-
     // Plays the sound based on the name, if doesn't match won't be played
     private void PlaySound(string soundName)
     {
-        Sound sound = Array.Find(sounds, x => x.Name == soundName);
-        if (sound == null || sound.Source.isPlaying) return;
-        sound.Source.Play();
+        var sound = sounds.FirstOrDefault(x => x.Name == soundName);
+        if (sound?.Source?.isPlaying == true)
+            sound.Source.Play();
     }
 
     // Stops the sound based on the name, if doesn't match won't be stopped
     private void StopSound(string soundName)
     {
-        Sound sound = Array.Find(sounds, x => x.Name == soundName);
-        if (sound == null || !sound.Source.isPlaying) return;
-        sound.Source.Stop();
+        var sound = sounds.FirstOrDefault(x => x.Name == soundName);
+        if (sound?.Source?.isPlaying == false)
+            sound.Source.Stop();
     }
 }
 

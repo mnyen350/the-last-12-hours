@@ -5,41 +5,33 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
+    private float _nextAttackTime;
 
-    //private SpriteRenderer sr;
-    protected Rigidbody2D rb;
+    public TimeSpan attackSpeed { get; protected set; }
+    public float attackRange { get; protected set; }
+    public float chaseRange { get; protected set; }
+    public bool isChasing { get; protected set; }
 
-    protected float _nextAttackTime;
-    protected TimeSpan _attackSpeed;
-    protected float _attackRange;
-    protected float _chaseRange;
-    protected bool _isChasing;
+    public override int attack => 1;
 
-    public bool isPlayerInVision => Vector2.Distance(Player.Instance.position, this.rb.position) <= _vision;
-    public bool isPlayerInChaseRange => Vector2.Distance(Player.Instance.position, this.rb.position) <= _chaseRange;
-    public bool isPlayerInAttackRange => Vector2.Distance(Player.Instance.position, this.rb.position) <= _attackRange;
+    public bool isPlayerInVision => Vector2.Distance(Player.Instance.position, this.rb.position) <= visionDistance;
+    public bool isPlayerInChaseRange => Vector2.Distance(Player.Instance.position, this.rb.position) <= chaseRange;
+    public bool isPlayerInAttackRange => Vector2.Distance(Player.Instance.position, this.rb.position) <= attackRange;
     public bool isAttackCooldown => _nextAttackTime > Time.time;
 
     protected void UpdateAttackCooldown()
     {
         // add cd
-        _nextAttackTime = Time.time + (float)_attackSpeed.TotalSeconds;
-    }
-
-    // Start is called before the first frame update
-    protected virtual void Start()
-    {
-        //sr = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
+        _nextAttackTime = Time.time + (float)attackSpeed.TotalSeconds;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (isPlayerInVision && !_isChasing)
-            _isChasing = true;
+        if (isPlayerInVision && !isChasing)
+            isChasing = true;
 
-        if (_isChasing)
+        if (isChasing)
         {
             if (isPlayerInAttackRange)
             {
@@ -54,7 +46,7 @@ public class Enemy : Entity
             }
             else if (isPlayerInChaseRange)
             {
-                Vector2 movement = (Player.Instance.position - rb.position).normalized;
+                Vector2 movement = (player.position - rb.position).normalized;
                 ApplyMovement(movement);
             }
             else // stop chasing
@@ -63,31 +55,21 @@ public class Enemy : Entity
                 // once a monster has begun to chase the player it can chase further
                 // than aggro vision
                 // to avoid this behavior just set chase and vision to the same value
-                _isChasing = false;
+                isChasing = false;
                 StopMovement();
             }
         }
 
-        if (!_isChasing)
+        if (!isChasing)
             rb.velocity = Vector2.zero;
     }
 
     public override void ReceiveAttack(Entity source, int damage)
     {
-        throw new NotImplementedException();
+        Debug.Log("Enemy receive damage");
+        base.ReceiveAttack(source, damage);
     }
 
-    protected override void Attack()
-    {
-        // damage calculation
-        int damage = _damage;
-
-        // apply damage
-        Player.Instance.ReceiveAttack(this, damage);
-    }
-
-    protected override void Walk()
-    {
-
-    }
+    protected void Attack() => player.ReceiveAttack(this, this.attack);
+    
 }

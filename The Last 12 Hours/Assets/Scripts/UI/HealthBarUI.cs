@@ -8,8 +8,6 @@ public class HealthBarUI : MonoBehaviour
 {
     public Player player => Player.Instance;
 
-    private Image[] hearts;
-
     [SerializeField]
     public Sprite fullHealthSprite;
     
@@ -33,14 +31,11 @@ public class HealthBarUI : MonoBehaviour
 
     void UpdateHealth(Entity e, int d)
     {
-        hearts = new[]
-{
-            GameObject.Find("2")?.GetComponent<Image>(),
-            GameObject.Find("4")?.GetComponent<Image>(),
-            GameObject.Find("6")?.GetComponent<Image>(),
-            GameObject.Find("8")?.GetComponent<Image>(),
-            GameObject.Find("10")?.GetComponent<Image>(),
-        };
+        var hearts = GameObject
+            .FindGameObjectsWithTag("HP")
+            .OrderBy(obj => int.Parse(obj.name))
+            .Select(obj => obj.GetComponent<Image>())
+            .ToArray();
 
         for (int i = 0; i < hearts.Length; i++)
         {

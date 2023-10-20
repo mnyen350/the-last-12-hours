@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,65 +6,70 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
-    private SpriteRenderer[] spriteRenderers;
+    private GameManager manager => GameManager.Instance;
+    private Player player => Player.Instance;
+    protected BoxCollider2D col2d { get; private set; }
+    protected SpriteRenderer[] spriteRenderers { get; private set; }
 
-    protected new BoxCollider2D collider = null;
-    protected bool interacted = false;
+    public bool isInteracting { get; protected set; }
 
-    public bool outline = true;
+    [field: SerializeField]
+    public bool showOutline { get; set; }
+    private bool _isOutlined = false;
 
-    public AudioSource InteractSound; 
-    public bool ChangeColliderState = true;
+    [field: SerializeField]
+    public AudioSource interactSound;
 
-    protected virtual void Start()
-    {
-        collider = GetComponent<BoxCollider2D>();
-    }
+    public event Action OnInteractingChange;
 
     public virtual void Interact()
     {
-        interacted = !interacted;
-        if (collider && ChangeColliderState)
-            collider.isTrigger = interacted;
+        isInteracting = !isInteracting;
+        col2d.isTrigger = isInteracting;
+
+        //interactSound?.Play();
+        OnInteractingChange?.Invoke();
     }
 
     // Gets all the components type SpriteRenderer to the array
-    private void Awake()
+    protected virtual void Awake()
     {
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+        col2d = GetComponent<BoxCollider2D>();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
-        if (outline) CheckOutline();
-    }
-
-    // Constantly check if a player is near the interactable.
-    private void CheckOutline()
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(Player.Instance.transform.position, Player.Instance.interactDistance);
-
-        if (colliders.Any(x => x.CompareTag("Interactable") && x.gameObject == this.gameObject))
+        if (showOutline)
         {
-            SetOutline(GameManager.Instance.OutlineInteract.Outline);
-        }
-        else
-        {
-            SetOutline(GameManager.Instance.OutlineInteract.NoOutline);
+            // Constantly check if a player is near the interactable.
+            bool isPlayerNear = Vector2.Distance(this.transform.position, player.position) <= player.interactDistance;
+            //    Physics2D
+            //    .OverlapCircleAll(player.position, player.interactDistance)
+            //    .Any(c => c.gameObject == this.gameObject);
+
+            //
+            // we don't want to spam changing the renderer's material
+            // so we only trigger a change here if required
+            //
+            if (_isOutlined && !isPlayerNear)
+            {
+                //Debug.Log("Disabling outline");
+                SetOutline(manager.OutlineInteract.NoOutline);
+                _isOutlined = false;
+            }
+            else if (!_isOutlined && isPlayerNear)
+            {
+                //Debug.Log("Enabling outline");
+                SetOutline(manager.OutlineInteract.Outline);
+                _isOutlined = true;
+            }
         }
     }
-
     // This sets the outline of interactable.
-    private void SetOutline(Material outlineMaterial)
+    protected void SetOutline(Material outlineMaterial)
     {
-        foreach (SpriteRenderer renderer in spriteRenderers)
-        {
+        foreach (var renderer in spriteRenderers)
             renderer.material = outlineMaterial;
-        }
-    }
-
-    public void PlayInteractSound()
-    {
-        InteractSound?.Play();
     }
 }

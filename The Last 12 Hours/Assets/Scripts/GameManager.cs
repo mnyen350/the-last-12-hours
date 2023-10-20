@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     public OutlineInteract OutlineInteract;
 
+    public ItemSprites ItemSprites;
+
 
     private new Camera camera;
 
@@ -70,6 +72,7 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("Scene loaded");
+
         // Plays and stops the background music acording to the scene name.
         foreach(Sound sound in backgroundMusic)
         {
@@ -83,7 +86,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        camera = GameObject.Find("Camera").GetComponentInChildren<Camera>();
+        camera = GameObject.Find("Camera")?.GetComponentInChildren<Camera>();
+        if (camera == null)
+            Debug.LogWarning("Camera not found!");
     }
 
     public static void LoadMainMenuScene() => SceneManager.LoadScene(0);
@@ -100,7 +105,8 @@ public class GameManager : MonoBehaviour
 
         SceneManager.sceneLoaded += enterLevelCallback;
         SceneManager.LoadScene($"Chapter{level}");
-        SceneManager.LoadScene("HealthUI", LoadSceneMode.Additive);
+        SceneManager.LoadScene("HealthUI", LoadSceneMode.Additive); 
+        SceneManager.LoadScene("InventoryMenu", LoadSceneMode.Additive);
 
     }
     public static void LoadGameOverScene() => SceneManager.LoadScene("GameOverMenu");
@@ -113,6 +119,15 @@ public class OutlineInteract
 
     public Material Outline;
     public Material NoOutline;
+}
+
+[Serializable]
+public class ItemSprites
+{
+    public Sprite Flashlight;
+    public Sprite Knife;
+    public Sprite Gun;
+    public Sprite Axe;
 }
 
 public class MouseProperties

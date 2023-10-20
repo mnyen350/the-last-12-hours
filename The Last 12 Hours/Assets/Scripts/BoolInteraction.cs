@@ -18,8 +18,6 @@ public class BoolInteraction : Interactable
         firstState.SetActive(interacted);
         secondState.SetActive(!interacted);
 
-        PlayInteractSound();
-
         base.Interact();
     }
 

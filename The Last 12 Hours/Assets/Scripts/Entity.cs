@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,37 +7,40 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Entity : MonoBehaviour
 {
+    public Player player => Player.Instance;
+
     protected Rigidbody2D rb { get; private set; }
     protected SpriteRenderer sr { get; private set; }
     protected Animator ani { get; private set; }
 
     [field: SerializeField]
     public int maxHealth { get; protected set; }
-
-    [field: SerializeField]
+    //[field: SerializeField]
     public int health { get; protected set; }
-
-    [SerializeField]
-    protected int _damage; //flat damage for this class
-
-    [SerializeField]
-    protected float _vision; //is this pixels? 
-
-    [SerializeField]
-    protected float Speed;
-
-    [SerializeField]
-    protected bool canMove;
-
-    protected bool isMoving;
-
-    protected abstract void Attack();
-    protected abstract void Walk();
+    public abstract int attack { get; }
+    [field: SerializeField]
+    public float visionDistance { get; protected set; } //is this pixels? 
+    [field: SerializeField]
+    public float speed { get; protected set; }
+    [field: SerializeField]
+    public bool canMove { get; set; }
+    public bool isMoving { get; private set; }
+    public Vector2 position => this.rb.position;
 
     public event Action OnStartMoving;
     public event Action OnStopMoving;
     public event Action OnDeath;
     public event Action<Entity, int> OnAttacked;
+
+    public IEnumerable<T> GetNearby<T>(float distance) where T : MonoBehaviour =>
+            Physics2D.OverlapCircleAll(transform.position, distance)
+            .Select(x => x.GetComponent<T>())
+            .Where(x => x != null)
+            //.Select(x => new { obj = x, distance = Vector2.Distance(position, x.transform.position) })
+            //.Where(x => x.distance <= distance)
+            //.OrderBy(x => x.distance)
+            //.Select(x => x.obj);
+            .OrderBy(x => Vector2.Distance(position, x.transform.position));
 
     public virtual void ReceiveAttack(Entity source, int damage)
     {
@@ -45,6 +49,11 @@ public abstract class Entity : MonoBehaviour
 
         if (health <= 0)
             OnDeath?.Invoke();
+    }
+
+    protected virtual void Start()
+    {
+
     }
 
     protected virtual void Awake()
@@ -72,7 +81,7 @@ public abstract class Entity : MonoBehaviour
             return;
         }
 
-        rb.velocity = movement * Speed;
+        rb.velocity = movement * speed;
         ani?.SetFloat("speed", movement.magnitude);
 
         if (movement.x > 0)

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mafia : Entity
+public class Mafia : Enemy
 {
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         
     }
@@ -14,16 +14,6 @@ public class Mafia : Entity
     void Update()
     {
         
-    }
-
-    protected override void Attack()
-    {
-        
-    }
-
-    protected override void Walk() 
-    {
-
     }
 
     public override void ReceiveAttack(Entity source, int damage)
