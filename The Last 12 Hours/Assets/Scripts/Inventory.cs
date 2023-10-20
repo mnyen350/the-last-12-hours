@@ -30,7 +30,7 @@ public class Inventory : IEnumerable<Item>
         var existing = Get(item.type);
         item.amount = Math.Max(1, item.amount); // sanity helper
 
-        if (existing != null)
+        if (existing?.type != null)
         {
             existing.amount += item.amount;
             OnUpdateItem?.Invoke(existing);

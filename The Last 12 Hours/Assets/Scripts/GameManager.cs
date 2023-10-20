@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public OutlineInteract OutlineInteract;
 
     public ItemSprites ItemSprites;
+    public Prefabs Prefabs;
 
 
     private new Camera camera;
@@ -129,6 +130,14 @@ public class ItemSprites
     public Sprite Gun;
     public Sprite Axe;
     public Sprite Bandage;
+}
+
+[Serializable]
+public class Prefabs
+{
+    public GameObject RatPrefab;
+
+    public GameObject BandagePrefab;
 }
 
 public class MouseProperties

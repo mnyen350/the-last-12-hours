@@ -6,17 +6,17 @@ using UnityEngine;
 
 public abstract class Interactable : MonoBehaviour
 {
-    private GameManager manager => GameManager.Instance;
-    private Player player => Player.Instance;
-    protected BoxCollider2D col2d { get; private set; }
+    public GameManager manager => GameManager.Instance;
+    public Player player => Player.Instance;
+
+    private bool _isOutlined = false;
+
     protected SpriteRenderer[] spriteRenderers { get; private set; }
 
     public bool isInteracting { get; protected set; }
 
     [field: SerializeField]
-    public bool showOutline { get; set; }
-    private bool _isOutlined = false;
-
+    public bool showOutline { get; set; } = true;
     [field: SerializeField]
     public AudioSource interactSound;
 
@@ -25,8 +25,6 @@ public abstract class Interactable : MonoBehaviour
     public virtual void Interact()
     {
         isInteracting = !isInteracting;
-        col2d.isTrigger = isInteracting;
-
         //interactSound?.Play();
         OnInteractingChange?.Invoke();
     }
@@ -35,7 +33,6 @@ public abstract class Interactable : MonoBehaviour
     protected virtual void Awake()
     {
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
-        col2d = GetComponent<BoxCollider2D>();
     }
 
     protected virtual void Update()

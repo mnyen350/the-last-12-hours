@@ -26,17 +26,28 @@ public class Item : MonoBehaviour
     public static bool IsAutoConsume(ItemType type) => AUTO_CONSUME_TYPES.Contains(type);
     public static Sprite GetSprite(ItemType type)
     {
-        var gameManager = GameManager.Instance;
+        var manager = GameManager.Instance;
         switch (type)
         {
-            case ItemType.Axe: return gameManager.ItemSprites.Axe;
-            case ItemType.Gun: return gameManager.ItemSprites.Axe;
-            case ItemType.Knife: return gameManager.ItemSprites.Axe;
-            case ItemType.Flashlight: return gameManager.ItemSprites.Flashlight;
-            case ItemType.Bandage: return gameManager.ItemSprites.Bandage;
+            case ItemType.Axe: return manager.ItemSprites.Axe;
+            case ItemType.Gun: return manager.ItemSprites.Axe;
+            case ItemType.Knife: return manager.ItemSprites.Axe;
+            case ItemType.Flashlight: return manager.ItemSprites.Flashlight;
+            case ItemType.Bandage: return manager.ItemSprites.Bandage;
         }
         return null;
     }
+    public static GameObject GetPrefab(ItemType type)
+    {
+        var manager = GameManager.Instance;
+        switch (type)
+        {
+            case ItemType.Bandage: return manager.Prefabs.BandagePrefab;
+        }
+        return null;
+    }
+
+
     public Player player => Player.Instance;
 
     [field: SerializeField]
@@ -91,14 +102,23 @@ public class Item : MonoBehaviour
                     var enemy = player.GetNearby<Enemy>(2).FirstOrDefault();
                     if (enemy != null)
                     {
-                        Debug.Log("Enemy found");
-                        Debug.Log(Vector2.Distance(player.position, enemy.position));
-
+                        Debug.Log($"Enemy found, dist={Vector2.Distance(player.position, enemy.position)}");
                         enemy.ReceiveAttack(player, player.attack);
                     }
                     else
                     {
-                        Debug.Log("No enemy found");
+                        Debug.Log("No enemy found to attack");
+                    }
+                    break;
+                }
+            case ItemType.Gun:
+                {
+                    var ammo = player.inventory.Get(ItemType.Ammo);
+                    if (ammo?.type != null)
+                    {
+                        // TO-DO: shoot logic
+
+                        player.inventory.Remove(ItemType.Ammo, 1);
                     }
                     break;
                 }

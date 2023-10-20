@@ -21,4 +21,9 @@ public class Rat : Enemy
         base.Start();
     }
 
+    protected override void DropLoot()
+    {
+        // example of dropping an item or something on death...
+        Instantiate(manager.Prefabs.BandagePrefab, this.transform.position, Quaternion.identity);
+    }
 }

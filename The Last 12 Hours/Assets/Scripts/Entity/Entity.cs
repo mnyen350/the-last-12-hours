@@ -8,6 +8,7 @@ using UnityEngine;
 public abstract class Entity : MonoBehaviour
 {
     public Player player => Player.Instance;
+    public GameManager manager => GameManager.Instance;
 
     protected Rigidbody2D rb { get; private set; }
     protected SpriteRenderer sr { get; private set; }

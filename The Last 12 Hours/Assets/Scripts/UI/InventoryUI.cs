@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class InventoryUI : MonoBehaviour
         _canvas.enabled = false;
 
         player.inventory.OnChange += Inventory_OnChange;
+        Inventory_OnChange();
     }
 
     private void Inventory_OnChange()
@@ -51,13 +53,26 @@ public class InventoryUI : MonoBehaviour
         // limited by slots length
         for (int i = 0; i < slots.Length; i++)
         {
-            var cws = slots[i].GetComponent<InventoryItemSlot>();
+            var iis = slots[i].GetComponent<InventoryItemSlot>();
+            var tmp = iis.GetComponentInChildren<TMP_Text>();
             var img = slots[i].GetComponent<Image>();
 
             if (i < items.Length)
             {
-                cws.itemType = items[i].type;
-                img.sprite = items[i].sprite;
+                var item = items[i];
+                iis.itemType = item.type;
+
+                // enable tmp if the item has a stack count greater than 1
+                if (tmp != null)
+                {
+                    tmp.text = (item.amount).ToString();
+                    if (tmp.enabled && item.amount <= 1)
+                        tmp.enabled = false;
+                    else if (!tmp.enabled && item.amount > 1)
+                        tmp.enabled = true;
+                }
+
+                img.sprite = item.sprite;
                 img.enabled = true;
             }
             else

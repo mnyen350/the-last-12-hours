@@ -19,6 +19,25 @@ public class Enemy : Entity
     public bool isPlayerInAttackRange => Vector2.Distance(Player.Instance.position, this.rb.position) <= attackRange;
     public bool isAttackCooldown => _nextAttackTime > Time.time;
 
+    protected override void Start()
+    {
+        this.OnDeath += Enemy_OnDeath;
+        base.Start();
+    }
+
+    private void Enemy_OnDeath()
+    {
+        Debug.Log("Enemy is dead");
+        DropLoot();
+        // destroy the object
+        Destroy(this.gameObject);
+    }
+
+    protected virtual void DropLoot()
+    {
+
+    }
+
     protected void UpdateAttackCooldown()
     {
         // add cd
