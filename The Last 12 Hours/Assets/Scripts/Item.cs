@@ -112,7 +112,7 @@ public class Item : MonoBehaviour
         if (isEquipment)
         {
             player.ChangeWeapon(this.type);
-            return true;
+            return false;
         }
         else
         {
