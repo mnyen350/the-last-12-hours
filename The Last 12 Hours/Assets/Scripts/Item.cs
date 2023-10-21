@@ -17,8 +17,8 @@ public enum ItemType
 }
 public class Item : MonoBehaviour
 {
-    private static ItemType[] AUTO_CONSUME_TYPES = new[] { ItemType.Ammo };
-    private static ItemType[] CONSUMABLES_TYPES = new[] { ItemType.Ammo, ItemType.Battery, ItemType.Bandage };
+    private static ItemType[] AUTO_CONSUME_TYPES = new ItemType[] { };
+    private static ItemType[] CONSUMABLES_TYPES = new[] { ItemType.Battery, ItemType.Bandage };
     private static ItemType[] EQUIPMENT_TYPES = new[] { ItemType.Flashlight, ItemType.Axe, ItemType.Knife, ItemType.Gun };
 
     public static bool IsEquipment(ItemType type) => EQUIPMENT_TYPES.Contains(type);
@@ -34,6 +34,7 @@ public class Item : MonoBehaviour
             case ItemType.Knife: return manager.ItemSprites.Knife;
             case ItemType.Flashlight: return manager.ItemSprites.Flashlight;
             case ItemType.Bandage: return manager.ItemSprites.Bandage;
+            case ItemType.Ammo: return manager.ItemSprites.Ammo;
         }
         return null;
     }
@@ -99,6 +100,8 @@ public class Item : MonoBehaviour
             case ItemType.Axe:
             case ItemType.Knife:
                 {
+                    player.ani?.SetTrigger("triggerStab");
+
                     var enemy = player.GetNearby<Enemy>(2f).FirstOrDefault();
                     if (enemy != null)
                     {
@@ -113,8 +116,11 @@ public class Item : MonoBehaviour
                 }
             case ItemType.Gun:
                 {
-                    if (player.ammo > 0)
+                    var ammo = player.inventory.Get(ItemType.Ammo);
+                    if (ammo?.amount > 0)
                     {
+                        player.ani?.SetTrigger("triggerShoot");
+
                         var mousePositionWorld = (Vector2)GameManager.Instance.camera.ScreenToWorldPoint(Input.mousePosition);
                         var direction = (mousePositionWorld - player.position).normalized;
                         var hit = Physics2D
@@ -129,8 +135,8 @@ public class Item : MonoBehaviour
                         var enemy = hit.FirstOrDefault();
                         enemy?.ReceiveAttack(player, player.attack);
 
-                        player.ammo -= 1;
-                        Debug.Log($"Gun shot, remaining ammo: {player.ammo}");
+                        player.inventory.Remove(ammo.type, 1);
+                        Debug.Log($"Gun shot, remaining ammo: {ammo.amount}");
                     }
                     break;
                 }
@@ -160,12 +166,6 @@ public class Item : MonoBehaviour
 
                         Debug.Log("Increasing playing hp");
                         player.health += 2;
-                        break;
-                    }
-                case ItemType.Ammo:
-                    {
-                        player.ammo += this.amount;
-                        Debug.Log($"Player ammo increased by ${this.amount} to now ${player.ammo}");
                         break;
                     }
                 default:

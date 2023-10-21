@@ -35,7 +35,6 @@ public class Player : Entity
 
     public GameObject hand { get; private set; }
     public override int attack => 1;
-    public int ammo { get; set; } = 0;
     public ItemType activeWeapon { get; private set; } = ItemType.Undefined;
     public int level { get; private set; }
     public Inventory inventory { get; private set; } = new Inventory();
@@ -78,8 +77,8 @@ public class Player : Entity
     public void Reset()
     {
         health = maxHealth;
-        ammo = 0;
         ChangeWeapon(ItemType.Undefined);
+        inventory.Clear();
     }
 
     protected override void Awake()

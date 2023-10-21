@@ -78,9 +78,6 @@ public class Enemy : Entity
                 StopMovement();
             }
         }
-
-        if (!isChasing)
-            rb.velocity = Vector2.zero;
     }
 
     public override void ReceiveAttack(Entity source, int damage)

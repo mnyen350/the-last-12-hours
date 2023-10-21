@@ -24,6 +24,12 @@ public class Inventory : IEnumerable<Item>
     public event Action<Item> OnUpdateItem;
     public event Action OnChange;
 
+    public void Clear()
+    {
+        _items.Clear();
+        OnChange?.Invoke();
+    }
+
     // Add items to the list
     public void Add(Item item)
     {

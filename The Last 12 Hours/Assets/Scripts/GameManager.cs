@@ -70,10 +70,10 @@ public class GameManager : MonoBehaviour
     // An event when a scene is loaded.
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("Scene loaded");
+        Debug.Log($"Scene loaded name={scene.name}, mode={mode}");
 
         // Plays and stops the background music acording to the scene name.
-        foreach(Sound sound in backgroundMusic)
+        foreach (Sound sound in backgroundMusic)
         {
             if (sound.Name == CurrentScene.name)
             {
@@ -88,13 +88,25 @@ public class GameManager : MonoBehaviour
         camera = GameObject.Find("Camera")?.GetComponentInChildren<Camera>();
         if (camera == null)
             Debug.LogWarning("Camera not found!");
+
+
+        // for chapter scenes, load the ui scenes
+        if (scene.name.StartsWith("Chapter", StringComparison.OrdinalIgnoreCase))
+        {
+#warning TO-DO: do this a better way, but for now this suffices for being able to start the game from any chapter scene
+            int level = int.Parse(scene.name.Substring(7));
+            Player.Instance.EnterLevel(level);
+
+            SceneManager.LoadScene("HealthUI", LoadSceneMode.Additive);
+            SceneManager.LoadScene("InventoryMenu", LoadSceneMode.Additive);
+        }
     }
 
     public static void LoadMainMenuScene() => SceneManager.LoadScene(0);
     public static void LoadSettingsScene() => SceneManager.LoadScene("SettingsMenu");
     public static void LoadLevelScene(int level)
     {
-        UnityAction<Scene, LoadSceneMode> enterLevelCallback = null;
+        /*UnityAction<Scene, LoadSceneMode> enterLevelCallback = null;
         enterLevelCallback = (a,b) =>
         {
             Player.Instance.EnterLevel(level);
@@ -102,10 +114,8 @@ public class GameManager : MonoBehaviour
             SceneManager.sceneLoaded -= enterLevelCallback;
         };
 
-        SceneManager.sceneLoaded += enterLevelCallback;
+        SceneManager.sceneLoaded += enterLevelCallback;*/
         SceneManager.LoadScene($"Chapter{level}");
-        SceneManager.LoadScene("HealthUI", LoadSceneMode.Additive); 
-        SceneManager.LoadScene("InventoryMenu", LoadSceneMode.Additive);
 
     }
     public static void LoadGameOverScene() => SceneManager.LoadScene("GameOverMenu");
@@ -128,6 +138,7 @@ public class ItemSprites
     public Sprite Gun;
     public Sprite Axe;
     public Sprite Bandage;
+    public Sprite Ammo;
 }
 
 [Serializable]

@@ -12,7 +12,7 @@ public abstract class Entity : MonoBehaviour
 
     protected Rigidbody2D rb { get; private set; }
     protected SpriteRenderer sr { get; private set; }
-    protected Animator ani { get; private set; }
+    public Animator ani { get; private set; }
 
     [field: SerializeField]
     public int maxHealth { get; protected set; }
@@ -86,6 +86,7 @@ public abstract class Entity : MonoBehaviour
         {
             if (isMoving)
             {
+                rb.velocity = Vector2.zero;
                 isMoving = false;
                 OnStopMoving?.Invoke();
             }
