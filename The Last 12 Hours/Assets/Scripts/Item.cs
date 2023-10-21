@@ -30,8 +30,8 @@ public class Item : MonoBehaviour
         switch (type)
         {
             case ItemType.Axe: return manager.ItemSprites.Axe;
-            case ItemType.Gun: return manager.ItemSprites.Axe;
-            case ItemType.Knife: return manager.ItemSprites.Axe;
+            case ItemType.Gun: return manager.ItemSprites.Gun;
+            case ItemType.Knife: return manager.ItemSprites.Knife;
             case ItemType.Flashlight: return manager.ItemSprites.Flashlight;
             case ItemType.Bandage: return manager.ItemSprites.Bandage;
         }
@@ -113,12 +113,16 @@ public class Item : MonoBehaviour
                 }
             case ItemType.Gun:
                 {
-                    var ammo = player.inventory.Get(ItemType.Ammo);
-                    if (ammo?.type != null)
+                    if (player.ammo > 0)
                     {
                         // TO-DO: shoot logic
+                        var direction = (player.Controls.GetMouseWorldPosition() - player.position).normalized;
+                        //var hit = Physics2D.Raycast(player.position, direction, 5f);
+                        Debug.DrawRay(player.position, direction * 100f, Color.magenta);
 
-                        player.inventory.Remove(ItemType.Ammo, 1);
+
+                        player.ammo -= 1;
+                        Debug.Log($"Gun shot, remaining ammo: {player.ammo}");
                     }
                     break;
                 }
@@ -148,6 +152,12 @@ public class Item : MonoBehaviour
 
                         Debug.Log("Increasing playing hp");
                         player.health += 2;
+                        break;
+                    }
+                case ItemType.Ammo:
+                    {
+                        player.ammo += this.amount;
+                        Debug.Log($"Player ammo increased by ${this.amount} to now ${player.ammo}");
                         break;
                     }
                 default:

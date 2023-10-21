@@ -25,19 +25,20 @@ public class Player : Entity
     }
 
     [SerializeField]
-    public Controls PlayerControls;
+    public PlayerControls Controls;
 
-    [SerializeField]
-    public float interactDistance = 5;
+    [field: SerializeField]
+    public float interactDistance { get; private set; } = 5;
 
     [SerializeField]
     private Sound[] sounds;
 
     public GameObject hand { get; private set; }
     public override int attack => 1;
-    public ItemType activeWeapon { get; private set; }
+    public int ammo { get; set; } = 0;
+    public ItemType activeWeapon { get; private set; } = ItemType.Undefined;
     public int level { get; private set; }
-    public Inventory inventory { get; private set; }
+    public Inventory inventory { get; private set; } = new Inventory();
 
     public bool flashlight
     {
@@ -77,6 +78,8 @@ public class Player : Entity
     public void Reset()
     {
         health = maxHealth;
+        ammo = 0;
+        ChangeWeapon(ItemType.Undefined);
     }
 
     protected override void Awake()
@@ -91,13 +94,11 @@ public class Player : Entity
 
         Instance = this;
         hand = transform.Find("Hand").gameObject;
-        inventory = new Inventory();
 
         OnStartMoving += () => PlaySound("Walking");
         OnStopMoving += () => StopSound("Walking");
         OnDeath += () => GameManager.LoadGameOverScene();
 
-        ChangeWeapon(ItemType.Undefined);
         Reset();
 
         Sound.InitializeSounds(gameObject, sounds);
@@ -129,7 +130,7 @@ public class Player : Entity
         }
 
         // Interact with objects
-        if (Input.GetKeyDown(PlayerControls.Interact))
+        if (Input.GetKeyDown(Controls.Interact))
         {
             // Gets the list of interactables and then gets the first one if it's not null.
             var interactable = GetNearby<Interactable>(interactDistance).FirstOrDefault();
@@ -137,7 +138,7 @@ public class Player : Entity
         }
 
         // Turn on/off the flashlight
-        if (Input.GetKeyDown(PlayerControls.Flashlight))
+        if (Input.GetKeyDown(Controls.Flashlight))
         {
             if (this.activeWeapon != ItemType.Undefined)
             {
@@ -150,7 +151,7 @@ public class Player : Entity
     void FixedUpdate()
     {
         // Using FixedUpdate to get a Physics acurate movement.
-        var movement = PlayerControls.GetMovement();
+        var movement = Controls.GetMovement();
         this.ApplyMovement(movement);
     }
 
@@ -173,12 +174,6 @@ public class Player : Entity
         var spawn = GameObject.Find("Spawnpoint");
         if (spawn != null)
             transform.position = spawn.transform.position;
-    }
-
-    protected void Heal(int healAmount)
-    {
-        health = Mathf.Clamp(health + healAmount, 0, maxHealth);
-        Debug.Log("Player healed");
     }
 
     public override void ReceiveAttack(Entity source, int damage)
@@ -205,7 +200,7 @@ public class Player : Entity
 }
 
 [Serializable]
-public class Controls
+public class PlayerControls
 {
     // Movement
     public KeyCode Up = KeyCode.W;
@@ -226,6 +221,8 @@ public class Controls
     public KeyCode Reload = KeyCode.R;
     public KeyCode Heal = KeyCode.Q;
     public KeyCode Interact = KeyCode.E;
+
+    public Vector2 GetMouseWorldPosition() => GameManager.Instance.camera.ScreenToWorldPoint(Input.mousePosition);
 
     public Vector2 GetMovement()
     {

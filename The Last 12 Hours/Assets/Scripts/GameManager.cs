@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     // Field to get the currentScene to avoid code redundancy.
     public Scene CurrentScene { get { return SceneManager.GetActiveScene(); } }
 
@@ -22,11 +24,7 @@ public class GameManager : MonoBehaviour
 
     public ItemSprites ItemSprites;
     public Prefabs Prefabs;
-
-
-    private new Camera camera;
-
-    public static GameManager Instance { get; private set; }
+    public new Camera camera { get; private set; }
 
     private void Awake()
     {
