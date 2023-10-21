@@ -17,7 +17,7 @@ public class Rat : Enemy
 
     private float GetAngle(Vector2 v1, Vector2 v2)
     {
-        var angle = (float)Math.Atan2(v1.y - v2.y, v1.x - v2.x);
+        var angle = Mathf.Atan2(v1.y - v2.y, v1.x - v2.x);
         if (angle < 0)
             angle += 2 * Mathf.PI;
         angle *= Mathf.Rad2Deg;
@@ -51,7 +51,7 @@ public class Rat : Enemy
             var p2s = GetAngle(player.position, this.position);
             var hit = IsInAngleRange(p2m - halfAngle, p2m + halfAngle, p2s);
 
-            Debug.Log(string.Format("{0} {1} {2}", p2m, p2s, hit));
+            //Debug.Log(string.Format("{0} {1} {2}", p2m, p2s, hit));
 
             // stop moving if the player shines the flashlight on the rat
             canMove = !hit;

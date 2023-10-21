@@ -13,6 +13,7 @@ public class Enemy : Entity
     public float attackRange { get; protected set; }
     [field: SerializeField]
     public float chaseRange { get; protected set; }
+
     public bool isChasing { get; protected set; }
 
     public override int attack => 1;
@@ -26,6 +27,7 @@ public class Enemy : Entity
     {
         health = maxHealth;
         this.OnDeath += Enemy_OnDeath;
+
         base.Start();
     }
 

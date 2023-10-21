@@ -168,7 +168,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &-4744803972084007931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,10 +181,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73980c3fc70e467419ebfe557e661a96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <maxHealth>k__BackingField: 0
-  <visionDistance>k__BackingField: 0
-  <speed>k__BackingField: 0
-  <canMove>k__BackingField: 0
+  <maxHealth>k__BackingField: 1
+  <visionDistance>k__BackingField: 2.5
+  <speed>k__BackingField: 0.5
+  <canMove>k__BackingField: 1
+  <attackSpeed>k__BackingField: 2.5
+  <attackRange>k__BackingField: 0.8
+  <chaseRange>k__BackingField: 3.5
 --- !u!95 &7238100303417410456
 Animator:
   serializedVersion: 5
