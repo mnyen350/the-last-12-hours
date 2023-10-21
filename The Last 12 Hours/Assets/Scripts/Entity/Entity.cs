@@ -93,7 +93,7 @@ public abstract class Entity : MonoBehaviour
         }
 
         rb.velocity = movement * speed;
-        ani?.SetFloat("speed", movement.magnitude);
+        ani?.SetBool("isWalk", movement.magnitude > 0);
 
         if (movement.x > 0)
         {

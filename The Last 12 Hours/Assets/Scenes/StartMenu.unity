@@ -203,6 +203,10 @@ PrefabInstance:
       propertyPath: m_Lens.OrthographicSize
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1993211079469066507, guid: 4df433a64250be54bae3e228f890168d, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
     - target: {fileID: 3267140139880854165, guid: 4df433a64250be54bae3e228f890168d, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -261,7 +265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7170172328916695704, guid: 4df433a64250be54bae3e228f890168d, type: 3}
       propertyPath: m_TagString
-      value: MainCamera
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8686573392193781988, guid: 4df433a64250be54bae3e228f890168d, type: 3}
       propertyPath: near clip plane

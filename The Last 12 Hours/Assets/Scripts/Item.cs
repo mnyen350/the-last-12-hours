@@ -99,7 +99,7 @@ public class Item : MonoBehaviour
             case ItemType.Axe:
             case ItemType.Knife:
                 {
-                    var enemy = player.GetNearby<Enemy>(2).FirstOrDefault();
+                    var enemy = player.GetNearby<Enemy>(2f).FirstOrDefault();
                     if (enemy != null)
                     {
                         Debug.Log($"Enemy found, dist={Vector2.Distance(player.position, enemy.position)}");
@@ -115,11 +115,19 @@ public class Item : MonoBehaviour
                 {
                     if (player.ammo > 0)
                     {
-                        // TO-DO: shoot logic
-                        var direction = (player.Controls.GetMouseWorldPosition() - player.position).normalized;
-                        //var hit = Physics2D.Raycast(player.position, direction, 5f);
-                        Debug.DrawRay(player.position, direction * 100f, Color.magenta);
+                        var mousePositionWorld = (Vector2)GameManager.Instance.camera.ScreenToWorldPoint(Input.mousePosition);
+                        var direction = (mousePositionWorld - player.position).normalized;
+                        var hit = Physics2D
+                            .RaycastAll(player.position, direction, 3f)
+                            .Select(o => o.collider.GetComponent<Enemy>())
+                            .Where(e => e != null)
+                            .OrderBy(e => Vector2.Distance(player.position, e.position))
+                            .ToList();
 
+                        // maybe add piercing to the gun? idk
+                        Debug.Log($"{hit.Count} potential enemies hit, but only hitting the first.");
+                        var enemy = hit.FirstOrDefault();
+                        enemy?.ReceiveAttack(player, player.attack);
 
                         player.ammo -= 1;
                         Debug.Log($"Gun shot, remaining ammo: {player.ammo}");

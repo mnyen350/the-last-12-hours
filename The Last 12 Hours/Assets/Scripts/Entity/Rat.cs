@@ -26,4 +26,10 @@ public class Rat : Enemy
         // example of dropping an item or something on death...
         Instantiate(manager.Prefabs.BandagePrefab, this.transform.position, Quaternion.identity);
     }
+
+    protected override void Attack()
+    {
+        ani?.SetBool("isBite", true);
+        base.Attack();
+    }
 }

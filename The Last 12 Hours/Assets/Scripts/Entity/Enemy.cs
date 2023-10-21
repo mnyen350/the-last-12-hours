@@ -89,6 +89,6 @@ public class Enemy : Entity
         base.ReceiveAttack(source, damage);
     }
 
-    protected void Attack() => player.ReceiveAttack(this, this.attack);
+    protected virtual void Attack() => player.ReceiveAttack(this, this.attack);
     
 }
