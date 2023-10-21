@@ -51,12 +51,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <maxHealth>k__BackingField: 0
-  <health>k__BackingField: 0
-  _damage: 0
-  _vision: 0
-  Speed: 1
-  canMove: 1
-  PlayerControls:
+  <visionDistance>k__BackingField: 0
+  <speed>k__BackingField: 0
+  <canMove>k__BackingField: 0
+  Controls:
     Up: 119
     Down: 115
     Right: 100
@@ -69,7 +67,7 @@ MonoBehaviour:
     Reload: 114
     Heal: 113
     Interact: 101
-  interactDistance: 0.75
+  <interactDistance>k__BackingField: 5
   sounds:
   - Name: Walking
     Clip: {fileID: 8300000, guid: 5eff8a886aab9d54299ce0562c09c3aa, type: 3}
@@ -232,7 +230,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6935600545270482209}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
   m_Name: 
@@ -266,7 +264,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6935600545270482209}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 42526f770761fc44cb08520bc055f043, type: 2}
   m_CullingMode: 0
