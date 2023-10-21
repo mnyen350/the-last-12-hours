@@ -7,8 +7,11 @@ public class Enemy : Entity
 {
     private float _nextAttackTime;
 
-    public TimeSpan attackSpeed { get; protected set; }
+    [field: SerializeField]
+    public float attackSpeed { get; protected set; }
+    [field: SerializeField]
     public float attackRange { get; protected set; }
+    [field: SerializeField]
     public float chaseRange { get; protected set; }
     public bool isChasing { get; protected set; }
 
@@ -21,6 +24,7 @@ public class Enemy : Entity
 
     protected override void Start()
     {
+        health = maxHealth;
         this.OnDeath += Enemy_OnDeath;
         base.Start();
     }
@@ -28,12 +32,16 @@ public class Enemy : Entity
     private void Enemy_OnDeath()
     {
         Debug.Log("Enemy is dead");
-        DropLoot();
-        // destroy the object
-        Destroy(this.gameObject);
+        this.ani?.SetTrigger("triggerDeath");
+        DropReward();
+
+        manager.DelayCallback(TimeSpan.FromSeconds(0.7), () =>
+        {
+            Destroy(this.gameObject);
+        });
     }
 
-    protected virtual void DropLoot()
+    protected virtual void DropReward()
     {
 
     }
@@ -41,12 +49,19 @@ public class Enemy : Entity
     protected void UpdateAttackCooldown()
     {
         // add cd
-        _nextAttackTime = Time.time + (float)attackSpeed.TotalSeconds;
+        _nextAttackTime = Time.time + (float)attackSpeed;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (health <= 0)
+        {
+            isChasing = false;
+            canMove = false;
+            StopMovement();
+        }
+
         if (isPlayerInVision && !isChasing)
             isChasing = true;
 

@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    private List<(float, Action)> _callbacks = new List<(float, Action)>();
+
     // Field to get the currentScene to avoid code redundancy.
     public Scene CurrentScene { get { return SceneManager.GetActiveScene(); } }
 
@@ -25,6 +27,11 @@ public class GameManager : MonoBehaviour
     public ItemSprites ItemSprites;
     public Prefabs Prefabs;
     public new Camera camera { get; private set; }
+
+    public void DelayCallback(TimeSpan time, Action action)
+    {
+        _callbacks.Add((Time.time + (float)time.TotalSeconds, action));
+    }
 
     private void Awake()
     {
@@ -46,7 +53,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // Remember to not overload this.
+        float now = Time.time;
+        for (int i = 0; i < _callbacks.Count; i++)
+        {
+            if (now >= _callbacks[i].Item1)
+            {
+                _callbacks[i].Item2.Invoke();
+                _callbacks.RemoveAt(i);
+                i--; // resync i
+            }
+        }
 
         // Gets the mouse useful properties.
         MouseProperties = GetMouseProperties();

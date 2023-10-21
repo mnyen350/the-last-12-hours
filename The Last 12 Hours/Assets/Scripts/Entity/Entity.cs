@@ -87,6 +87,7 @@ public abstract class Entity : MonoBehaviour
             if (isMoving)
             {
                 rb.velocity = Vector2.zero;
+                ani?.SetBool("isWalk", false);
                 isMoving = false;
                 OnStopMoving?.Invoke();
             }

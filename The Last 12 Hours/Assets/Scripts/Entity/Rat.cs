@@ -12,12 +12,6 @@ public class Rat : Enemy
     // Start is called before the first frame update
     protected override void Start()
     {
-        attackRange = 0.8f;
-        visionDistance = 2.5f;
-        chaseRange = 3.5f;
-        attackSpeed = TimeSpan.FromMilliseconds(2500);
-        speed = 0.5f;
-        canMove = true;
         base.Start();
     }
 
@@ -68,7 +62,7 @@ public class Rat : Enemy
         }
     }
 
-    protected override void DropLoot()
+    protected override void DropReward()
     {
         // example of dropping an item or something on death...
         Instantiate(manager.Prefabs.BandagePrefab, this.transform.position, Quaternion.identity);
