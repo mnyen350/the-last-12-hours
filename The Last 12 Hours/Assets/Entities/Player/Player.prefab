@@ -67,7 +67,7 @@ MonoBehaviour:
     Reload: 114
     Heal: 113
     Interact: 101
-  <interactDistance>k__BackingField: 5
+  <interactDistance>k__BackingField: 0.7
   sounds:
   - Name: Walking
     Clip: {fileID: 8300000, guid: 5eff8a886aab9d54299ce0562c09c3aa, type: 3}

@@ -163,5 +163,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35aeb365de1864044bb61633513b87f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <showOutline>k__BackingField: 0
+  <showOutline>k__BackingField: 1
   interactSound: {fileID: 0}
