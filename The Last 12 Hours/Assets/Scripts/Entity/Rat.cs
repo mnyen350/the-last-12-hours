@@ -15,30 +15,6 @@ public class Rat : Enemy
         base.Start();
     }
 
-    private float GetAngle(Vector2 v1, Vector2 v2)
-    {
-        var angle = Mathf.Atan2(v1.y - v2.y, v1.x - v2.x);
-        if (angle < 0)
-            angle += 2 * Mathf.PI;
-        angle *= Mathf.Rad2Deg;
-        return angle;
-    }
-
-    private bool IsInAngleRange(float f, float t, float w)
-    {
-        // https://stackoverflow.com/questions/71881043/how-to-check-angle-in-range
-
-        f %= 360;
-        t %= 360;
-        w %= 360;
-
-        while (f < 0) f += 360;
-        while (t < f) t += 360;
-        while (w < f) w += 360;
-
-
-        return f <= w && w <= t;
-    }
 
     void Update()
     {
@@ -64,13 +40,6 @@ public class Rat : Enemy
 
     protected override void DropReward()
     {
-        // example of dropping an item or something on death...
-        Instantiate(manager.Prefabs.BandagePrefab, this.transform.position, Quaternion.identity);
-    }
-
-    protected override void Attack()
-    {
-        ani?.SetTrigger("triggerBite");
-        base.Attack();
+        DropItem(ItemType.Bandage);
     }
 }

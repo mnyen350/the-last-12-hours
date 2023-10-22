@@ -37,7 +37,9 @@ public class Enemy : Entity
         this.ani?.SetTrigger("triggerDeath");
         DropReward();
 
-        manager.DelayCallback(TimeSpan.FromSeconds(0.7), () =>
+        // 0.7 for rat
+
+        manager.DelayCallback(TimeSpan.FromSeconds(1), () =>
         {
             Destroy(this.gameObject);
         });
@@ -46,6 +48,15 @@ public class Enemy : Entity
     protected virtual void DropReward()
     {
 
+    }
+
+    protected virtual void DropItem(ItemType type)
+    {
+        var prefab = Item.GetPrefab(type);
+        if (prefab != null)
+            Instantiate(prefab, this.transform.position, Quaternion.identity);
+        else
+            Debug.LogWarning($"Could not drop item {type} as no prefab exists!");
     }
 
     protected void UpdateAttackCooldown()
@@ -73,12 +84,18 @@ public class Enemy : Entity
             {
                 if (!isAttackCooldown)
                 {
-                    UpdateAttackCooldown();
-                    Attack();
+                    // if success update cd
+                    if (Attack())
+                    {
+                        UpdateAttackCooldown();
+                        StopMovement();
+                    }
                 }
-
-                // stop moving because close enuogh to player to attack
-                StopMovement();
+                else
+                {
+                    // stop moving because close enuogh to player to attack
+                    StopMovement();
+                }
             }
             else if (isPlayerInChaseRange)
             {
@@ -103,6 +120,36 @@ public class Enemy : Entity
         base.ReceiveAttack(source, damage);
     }
 
-    protected virtual void Attack() => player.ReceiveAttack(this, this.attack);
-    
+    protected virtual bool Attack()
+    {
+        ani?.SetTrigger("triggerAttack");
+        RaiseAttack(player);
+        player.ReceiveAttack(this, this.attack);
+        return true;
+    }
+
+    protected float GetAngle(Vector2 v1, Vector2 v2)
+    {
+        var angle = Mathf.Atan2(v1.y - v2.y, v1.x - v2.x);
+        if (angle < 0)
+            angle += 2 * Mathf.PI;
+        angle *= Mathf.Rad2Deg;
+        return angle;
+    }
+
+    protected bool IsInAngleRange(float f, float t, float w)
+    {
+        // https://stackoverflow.com/questions/71881043/how-to-check-angle-in-range
+
+        f %= 360;
+        t %= 360;
+        w %= 360;
+
+        while (f < 0) f += 360;
+        while (t < f) t += 360;
+        while (w < f) w += 360;
+
+
+        return f <= w && w <= t;
+    }
 }

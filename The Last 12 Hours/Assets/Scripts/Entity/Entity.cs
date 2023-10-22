@@ -41,7 +41,10 @@ public abstract class Entity : MonoBehaviour
     public event Action OnStopMoving;
     public event Action OnDeath;
     public event Action<Entity, int> OnAttacked;
+    public event Action<Entity> OnAttack;
     public event Action OnHealthChange;
+
+    protected void RaiseAttack(Entity e) => OnAttack?.Invoke(e);
 
     public IEnumerable<T> GetNearby<T>(float distance) where T : MonoBehaviour =>
             Physics2D.OverlapCircleAll(transform.position, distance)
@@ -55,6 +58,10 @@ public abstract class Entity : MonoBehaviour
 
     public virtual void ReceiveAttack(Entity source, int damage)
     {
+        // is dead
+        if (health <= 0) 
+            return;
+
         health = Math.Max(0, health - damage);
         OnAttacked?.Invoke(source, damage);
 
