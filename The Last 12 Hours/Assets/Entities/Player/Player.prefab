@@ -50,10 +50,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc2c10870c743441817ba947f10b730, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <maxHealth>k__BackingField: 0
+  <maxHealth>k__BackingField: 10
   <visionDistance>k__BackingField: 0
-  <speed>k__BackingField: 0
-  <canMove>k__BackingField: 0
+  <speed>k__BackingField: 1
+  <canMove>k__BackingField: 1
   Controls:
     Up: 119
     Down: 115
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6935600545270482209}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
   m_Name: 
@@ -252,7 +252,7 @@ MonoBehaviour:
   - {x: 0.13925949, y: -0.4798763, z: 0}
   m_ShapePathHash: -1856811995
   m_Mesh: {fileID: 0}
-  m_InstanceId: 65946
+  m_InstanceId: 69886
   m_LocalBounds:
     m_Center: {x: 0.06812896, y: -0.072844446, z: 0}
     m_Extent: {x: 0.15115556, y: 0.40757143, z: 0}
@@ -264,7 +264,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6935600545270482209}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 42526f770761fc44cb08520bc055f043, type: 2}
   m_CullingMode: 0

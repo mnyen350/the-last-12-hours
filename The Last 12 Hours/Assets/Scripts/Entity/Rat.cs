@@ -9,6 +9,8 @@ using UnityEngine.XR;
 
 public class Rat : Enemy
 {
+    public bool isInLight { get; set; }
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -30,16 +32,27 @@ public class Rat : Enemy
             //Debug.Log(string.Format("{0} {1} {2}", p2m, p2s, hit));
 
             // stop moving if the player shines the flashlight on the rat
+            isInLight = hit;
             canMove = !hit;
         }
         else
         {
+            isInLight = false;
             canMove = true;
         }
     }
 
+    protected override bool Attack()
+    {
+        if (isInLight)
+            return false;
+
+        return base.Attack();
+    }
+
     protected override void DropReward()
     {
+        // add rng?
         DropItem(ItemType.Bandage);
     }
 }
