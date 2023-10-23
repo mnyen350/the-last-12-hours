@@ -4,21 +4,24 @@ using UnityEngine;
 
 public class BoolInteraction : Interactable
 {
-    private bool interacted = false;
-
     [SerializeField]
     private GameObject firstState;
 
     [SerializeField]
     private GameObject secondState;
 
-    // Interacts with it and changes the state of the object.
-    public override void Interact()
+    public void Start()
     {
-        firstState.SetActive(interacted);
-        secondState.SetActive(!interacted);
-
-        base.Interact();
+        this.OnInteractingChange += BoolInteraction_OnInteractingChange;
     }
 
+    private void BoolInteraction_OnInteractingChange()
+    {
+        var collider = this.GetComponent<BoxCollider2D>();
+        if (collider != null)
+            collider.isTrigger = !collider.isTrigger;
+
+        firstState.SetActive(!this.isInteracting);
+        secondState.SetActive(this.isInteracting);
+    }
 }
