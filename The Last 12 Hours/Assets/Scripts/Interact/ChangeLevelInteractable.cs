@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Level2Interactable : Interactable
+public class ChangeLevelInteractable : Interactable
 {
-    // TO-DO: add level serializable field
+    [field: SerializeField]
+    public int nextLevel { get; private set; }
 
     void Start()
     {
@@ -12,7 +13,7 @@ public class Level2Interactable : Interactable
         {
             if (this.isInteracting)
             {
-                GameManager.LoadLevelScene(2);
+                GameManager.LoadLevelScene(nextLevel);
             }
         };
     }

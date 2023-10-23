@@ -19,7 +19,7 @@ public abstract class Interactable : MonoBehaviour
     public bool showOutline { get; set; } = true;
 
     [field: SerializeField]
-    public AudioSource interactSound;
+    public AudioSource interactSound { get; private set; }
 
     public event Action OnInteractingChange;
 
