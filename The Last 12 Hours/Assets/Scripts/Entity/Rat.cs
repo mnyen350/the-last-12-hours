@@ -9,7 +9,7 @@ using UnityEngine.XR;
 
 public class Rat : Enemy
 {
-    public bool isInLight { get; set; }
+    public bool isInLight { get; private set; }
 
     // Start is called before the first frame update
     protected override void Start()
@@ -41,7 +41,6 @@ public class Rat : Enemy
             canMove = true;
         }
     }
-
     protected override bool Attack()
     {
         if (isInLight)
@@ -52,7 +51,6 @@ public class Rat : Enemy
 
     protected override void DropReward()
     {
-        // add rng?
         DropItem(ItemType.Bandage);
     }
 }
